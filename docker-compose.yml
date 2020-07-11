@@ -1,0 +1,48 @@
+version: "3"
+
+networks: 
+    php-draw-squares:
+
+services: 
+    apache:
+        build: 
+            context: ""
+            dockerfile: ./docker/Dockerfile
+        container_name: apache
+        depends_on: 
+            - mysql
+        ports: 
+            - 80:80
+            - 443:443
+        volumes: 
+            - ./src:/var/www/html:cached
+            - ./docker/certs:/var/www/certs:cached
+        networks:
+            - php-draw-squares
+    mysql:
+        image: mysql:5.7
+        container_name: mysql
+        restart: unless-stopped
+        tty: true
+        ports: 
+            - "23306:3306"
+        volumes:
+            - ./mysql:/var/lib/mysql:cached
+        environment:
+            MYSQL_USER: root
+            MYSQL_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: secret
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        networks:
+            - php-draw-squares
+    npm:
+        image: node:13.7
+        container_name: npm
+        volumes:
+            - ./src:/var/www/html:cached
+        working_dir: /var/www/html
+        entrypoint: ["npm"]
+        networks:
+            - php-draw-squares
+
