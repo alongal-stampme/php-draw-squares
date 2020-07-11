@@ -19,7 +19,7 @@ class App
         $colours = new Colours($canvas);
         imagefill($canvas, 0, 0, $colours->lightGray);
 
-        $list = $document->search('TOTAL:');
+        $list = $document->search('TOTAL: 25.29');
 //        $list = $document->getVertices();
 
         foreach ($list as $vertex) {

@@ -10,10 +10,16 @@ class ComposerStaticInite7dafdf26c5ed36f501768ea59fa6de9
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
+        'fe62ba7e10580d903cc46d808b5961a4' => __DIR__ . '/..' . '/tightenco/collect/src/Collect/Support/helpers.php',
+        'caf31cc6ec7cf2241cb6f12c226c3846' => __DIR__ . '/..' . '/tightenco/collect/src/Collect/Support/alias.php',
         '3b2d87ea65ff60bfcc3ad088c94b64f8' => __DIR__ . '/../..' . '/app/utils.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'T' => 
+        array (
+            'Tightenco\\Collect\\' => 18,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
@@ -27,6 +33,10 @@ class ComposerStaticInite7dafdf26c5ed36f501768ea59fa6de9
     );
 
     public static $prefixDirsPsr4 = array (
+        'Tightenco\\Collect\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tightenco/collect/src/Collect',
+        ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
@@ -45,6 +55,16 @@ class ComposerStaticInite7dafdf26c5ed36f501768ea59fa6de9
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'N' => 
+        array (
+            'NlpTools\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/nlp-tools/nlp-tools/src',
+            ),
+        ),
+    );
+
     public static $classMap = array (
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
@@ -55,6 +75,7 @@ class ComposerStaticInite7dafdf26c5ed36f501768ea59fa6de9
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInite7dafdf26c5ed36f501768ea59fa6de9::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInite7dafdf26c5ed36f501768ea59fa6de9::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInite7dafdf26c5ed36f501768ea59fa6de9::$prefixesPsr0;
             $loader->classMap = ComposerStaticInite7dafdf26c5ed36f501768ea59fa6de9::$classMap;
 
         }, null, ClassLoader::class);
