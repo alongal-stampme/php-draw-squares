@@ -3,9 +3,6 @@
 namespace App;
 
 use App\NlpTools\GoogleOcrTokenizer;
-use NlpTools\Tokenizers\WhitespaceTokenizer;
-use App\NlpTools\WhiteSpaceAndColonTokenizer;
-use NlpTools\Tokenizers\WhitespaceAndPunctuationTokenizer;
 
 class JsonDocument
 {
@@ -26,6 +23,11 @@ class JsonDocument
         return $this->data->responses[0]->fullTextAnnotation->pages[0]->height;
     }
 
+    public function getText()
+    {
+        return explode(PHP_EOL, $this->data->responses[0]->fullTextAnnotation->text);
+    }
+
     public function getVertices()
     {
         $array = [];
@@ -37,15 +39,51 @@ class JsonDocument
 
     public function search($phrase)
     {
+        $descriptions = $this->pluckDescription($this->data->responses[0]->textAnnotations);
+
         $space = new GoogleOcrTokenizer();
-        $result = $space->tokenize($phrase);
-        dd($result);
+        $tokens = $space->tokenize($phrase);
+
+        $indices = $this->isIn($tokens, $descriptions);
 
         $array = [];
-        foreach ($this->data->responses[0]->textAnnotations as $annotation) {
-            if ($annotation->description == $phrase) {
-                $array[] = $annotation->boundingPoly->vertices;
+        foreach ($this->data->responses[0]->textAnnotations as $index => $annotation) {
+            if ( ! in_array($index, $indices)) continue;
+
+            $array[] = $annotation->boundingPoly->vertices;
+        }
+
+        return $array;
+    }
+
+    private function isIn(array $short, array $long)
+    {
+        $array = [];
+        foreach ($long as $i => $itemLong) {
+            if ($itemLong === $short[0]) {
+                $length = 0;
+                $temp = [];
+                foreach ($short as $j => $itemShort) {
+                    if ($itemShort === $long[$i + $j]) {
+                        $length++;
+//                        $temp[] = $long[$i + $j];
+                        $temp[] = $i + $j;
+                    }
+                }
+                if ($length === count($short)) {
+                    $array[] = $temp;
+                }
             }
+        }
+
+        return collect($array)->flatten()->toArray();
+    }
+
+    private function pluckDescription($textAnnotations)
+    {
+        $array = [];
+        foreach ($textAnnotations as $textAnnotation) {
+            $array[] = $textAnnotation->description;
         }
         return $array;
     }

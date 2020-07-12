@@ -6,7 +6,7 @@ class App
 {
     public function run()
     {
-        $image = '4pkg2q5hwo81mv6l';
+        $image = 'x6bemq72ac5g1d3p';
         $data = load_json_file($image . '.json');
         $document = new JsonDocument($data);
 
@@ -19,17 +19,12 @@ class App
         $colours = new Colours($canvas);
         imagefill($canvas, 0, 0, $colours->lightGray);
 
-        $list = $document->search('TOTAL: 25.29');
-//        $list = $document->getVertices();
-
-        foreach ($list as $vertex) {
-            imagerectangle(
+        $text = $document->getText();
+        foreach ($text as $line) {
+            $this->draw(
+                $document->search($line),
                 $canvas,
-                $vertex[0]->x,
-                $vertex[0]->y,
-                $vertex[2]->x,
-                $vertex[2]->y,
-                $colours->red
+                $colours->purple
             );
         }
 
@@ -38,5 +33,17 @@ class App
 
         imagejpeg($canvas);
         imagedestroy($canvas);
+    }
+
+    private function draw(array $vertex, $canvas, $colour)
+    {
+        imagerectangle(
+            $canvas,
+            $vertex[0][0]->x,
+            $vertex[0][0]->y,
+            $vertex[count($vertex) - 1][2]->x,
+            $vertex[count($vertex) - 1][2]->y,
+            $colour
+        );
     }
 }

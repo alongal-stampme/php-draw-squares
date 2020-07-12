@@ -13,6 +13,8 @@ class GoogleOcrTokenizer implements TokenizerInterface
         $array = $this->replaceCharFromArray('*', $array);
         $array = $this->replaceCharFromArray('(', $array);
         $array = $this->replaceCharFromArray(')', $array);
+        $array = $this->replaceCharFromArray(',', $array);
+        $array = $this->replaceCharFromArray(' ', $array);
         return $array;
     }
 
