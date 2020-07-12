@@ -10,6 +10,7 @@ class Colours
     public $lightGray;
     public $red;
     public $purple;
+    public $yellow;
 
     public function __construct($canvas)
     {
@@ -19,5 +20,6 @@ class Colours
         $this->lightGray = imagecolorclosest($canvas, 242, 243, 244);
         $this->red = imagecolorclosest($canvas, 255, 0, 0);
         $this->purple = imagecolorclosest($canvas, 148, 0, 211);
+        $this->yellow = imagecolorclosest($canvas, 255, 255, 0);
     }
 }

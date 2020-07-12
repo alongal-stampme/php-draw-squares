@@ -47,10 +47,13 @@ class JsonDocument
         $indices = $this->isIn($tokens, $descriptions);
 
         $array = [];
-        foreach ($this->data->responses[0]->textAnnotations as $index => $annotation) {
-            if ( ! in_array($index, $indices)) continue;
-
-            $array[] = $annotation->boundingPoly->vertices;
+        foreach ($indices as $vertex) {
+            $tempArray = [];
+            foreach ($this->data->responses[0]->textAnnotations as $index => $annotation) {
+                if ( ! in_array($index, $vertex)) continue;
+                $tempArray[] = $annotation->boundingPoly->vertices;
+            }
+            $array[] = $tempArray;
         }
 
         return $array;
@@ -76,7 +79,7 @@ class JsonDocument
             }
         }
 
-        return collect($array)->flatten()->toArray();
+        return $array;
     }
 
     private function pluckDescription($textAnnotations)
