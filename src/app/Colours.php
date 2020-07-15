@@ -22,4 +22,17 @@ class Colours
         $this->purple = imagecolorclosest($canvas, 148, 0, 211);
         $this->yellow = imagecolorclosest($canvas, 255, 255, 0);
     }
+
+    public function random()
+    {
+        return collect([
+           $this->pink,
+           $this->white,
+           $this->green,
+           $this->lightGray,
+           $this->red,
+           $this->purple,
+            $this->yellow
+        ])->random();
+    }
 }

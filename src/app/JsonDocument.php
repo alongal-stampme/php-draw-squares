@@ -28,12 +28,55 @@ class JsonDocument
         return explode(PHP_EOL, $this->data->responses[0]->fullTextAnnotation->text);
     }
 
+    public function getBoundingPoly()
+    {
+        return $this->data->responses[0]->textAnnotations[0]->boundingPoly->vertices;
+    }
+
     public function getVertices()
     {
         $array = [];
         foreach ($this->data->responses[0]->textAnnotations as $annotation) {
             $array[] = $annotation->boundingPoly->vertices;
         }
+        return $array;
+    }
+
+    public function getVerticesEx()
+    {
+        $array = [];
+
+        foreach ($this->data->responses[0]->fullTextAnnotation->pages[0]->blocks as $block) {
+//            $array[] = $block->boundingBox->vertices;
+            foreach ($block->paragraphs as $paragraph) {
+//                $array[] = $paragraph->boundingBox->vertices;
+                foreach ($paragraph->words as $word) {
+//                    $array[] = $word->boundingBox->vertices;
+                    foreach ($word->symbols as $symbol) {
+                        $array[] = $symbol->boundingBox->vertices;
+                    }
+                }
+            }
+        }
+
+        return $array;
+    }
+
+    public function getWords()
+    {
+        $array = [];
+
+        foreach ($this->data->responses[0]->fullTextAnnotation->pages[0]->blocks as $block) {
+            foreach ($block->paragraphs as $paragraph) {
+//                $array[] = $paragraph->boundingBox->vertices;
+                foreach ($paragraph->words as $word) {
+                    $w = new Word();
+                    $w->setJson($word);
+                    $array[] = $w;
+                }
+            }
+        }
+
         return $array;
     }
 
