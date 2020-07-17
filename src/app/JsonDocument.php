@@ -3,6 +3,8 @@
 namespace App;
 
 use App\NlpTools\GoogleOcrTokenizer;
+use App\NlpTools\CharacterTokenizer;
+use Tightenco\Collect\Support\Collection;
 
 class JsonDocument
 {
@@ -11,6 +13,26 @@ class JsonDocument
     public function __construct($data)
     {
         $this->data = $data;
+    }
+
+    public function search($phrase)
+    {
+        $tokens = (new CharacterTokenizer())->tokenize($phrase);
+        $symbols = $this->pluckSymbols();
+
+        $indices = $this->isIn($tokens, $symbols);
+
+        $array = [];
+        foreach ($indices as $vertex) {
+            $tempArray = [];
+            foreach ($symbols as $index => $annotation) {
+                if ( ! in_array($index, $vertex)) continue;
+                $tempArray[] = $annotation->boundingBox->vertices;
+            }
+            $array[] = $tempArray;
+        }
+
+        return $array[0];
     }
 
     public function getWidth()
@@ -80,7 +102,7 @@ class JsonDocument
         return $array;
     }
 
-    public function search($phrase)
+    public function searchEx($phrase)
     {
         $descriptions = $this->pluckDescription($this->data->responses[0]->textAnnotations);
 
@@ -102,8 +124,11 @@ class JsonDocument
         return $array;
     }
 
-    private function isIn(array $short, array $long)
+    private function isIn($short, $long)
     {
+        $short = collect($short);
+        $long = collect(json_decode(json_encode($long), true))->pluck('text');
+
         $array = [];
         foreach ($long as $i => $itemLong) {
             if ($itemLong === $short[0]) {
@@ -131,6 +156,23 @@ class JsonDocument
         foreach ($textAnnotations as $textAnnotation) {
             $array[] = $textAnnotation->description;
         }
+        return $array;
+    }
+
+    private function pluckSymbols()
+    {
+        $array = [];
+        foreach ($this->data->responses[0]->fullTextAnnotation->pages[0]->blocks as $block) {
+            foreach ($block->paragraphs as $paragraph) {
+                foreach ($paragraph->words as $word) {
+                    foreach ($word->symbols as $symbol) {
+                        $array[] = $symbol;
+                    }
+                }
+            }
+        }
+//        $array = json_decode(json_encode($array), true);
+//        return collect($array);
         return $array;
     }
 }
