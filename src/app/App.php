@@ -2,15 +2,11 @@
 
 namespace App;
 
-use App\Geometry\Line;
-use App\Geometry\Vertex;
-use App\Geometry\LineStream;
-
 class App
 {
     public function run()
     {
-        $image = 'abcdefg';
+        $image = '4pkg2q5hwo81mv6l';
         $data = load_json_file($image . '.json');
         $canvas = imagecreatefrompng(__DIR__ . '/../image_files/' . $image . '.jpg');
         $colours = new Colours($canvas);
@@ -18,13 +14,29 @@ class App
 
         $document = new JsonDocument($data);
 
-//        dd($document->getText());
-        $words = $document->search("Order #3");
+        $words = $document->getWords();
+        $text = $document->getText();
+//        exit;
 
-        foreach ($words as $index => $word) {
-//            $word = $words[$index];
-            $this->draw([$word], $canvas, $colours->red);
+//        $text = $document->getText();
+//        dump($text);
+//        $vertices = $document->search('Total', false);
+
+        foreach ($text as $index => $word) {
+            if ($index >= 17 && $index <= 19) {
+                $vertices = $document->search($word);
+                dump($vertices);
+//                $this->draw($vertices, $canvas, $colours->red);
+            }
         }
+
+        $line18 = $document->search($text[18]);
+        $line19 = $document->search($text[19]);
+
+        $new = $line18;
+//        $new[0][] = end($line19[0]);
+
+        $this->draw($new, $canvas, $colours->red);
 
         // Output and free from memory
         header('Content-Type: image/jpeg');

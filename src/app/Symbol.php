@@ -2,35 +2,33 @@
 
 namespace App;
 
-class Word
+class Symbol
 {
-    protected $jsonWord;
+    protected $json;
     public $text;
-    public $breakCharacter;
-    public $vertices;
+    public $language;
     public $confidence;
-    public $symbols;
+    public $break;
+    public $vertices;
 
     public function __construct($json = null)
     {
-        $this->jsonWord = '';
         $this->text = '';
-        $this->breakCharacter = null;
         $this->vertices = [];
         $this->confidence = 0.0;
-        $this->symbols = [];
+        $this->break = null;
 
         if ($json) $this->setJson($json);
     }
 
-    public function setJson($jsonWord)
+    public function setJson($json)
     {
-        $this->jsonWord = $jsonWord;
-        $this->vertices = $jsonWord->boundingBox->vertices;
-        $this->confidence = $jsonWord->confidence;
-        $this->setSymbols();
-        $this->extractText();
-        $this->breakCharacter = end($this->symbols)->breakCharacter();
+        $this->json = $json;
+        $this->text = $json->text;
+        $this->confidence = $json->confidence;
+        $this->language = $json->property->detectedLanguages[0]->languageCode;
+        $this->vertices = $json->boundingBox->vertices;
+        $this->setBreak();
     }
 
     public function setText($text)
@@ -49,21 +47,27 @@ class Word
         return $outcome;
     }
 
+    public function breakCharacter()
+    {
+        $breaks = [
+            'LINE_BREAK' => "\n",
+            'EOL_SURE_SPACE' => "\n",
+            'SPACE' => " "
+        ];
+        return $breaks[$this->break];
+    }
+
     private function extractText()
     {
         $text = '';
-        foreach ($this->symbols as $symbol) {
+        foreach ($this->jsonWord->symbols as $symbol) {
             $text .= $symbol->text;
         }
         $this->text = $text;
     }
 
-    private function setSymbols()
+    private function setBreak()
     {
-        $array = [];
-        foreach ($this->jsonWord->symbols as $symbol) {
-            $array[] = new Symbol($symbol);
-        }
-        $this->symbols = $array;
+        $this->break = $this->json->property->detectedBreak->type;
     }
 }

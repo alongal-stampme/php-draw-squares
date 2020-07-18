@@ -8,6 +8,11 @@ class CharacterTokenizer implements TokenizerInterface
 {
     public function tokenize($str)
     {
-        return str_split($str);
+        $len = mb_strlen($str, 'UTF-8');
+        $result = [];
+        for ($i = 0; $i < $len; $i++) {
+            $result[] = mb_substr($str, $i, 1, 'UTF-8');
+        }
+        return $result;
     }
 }

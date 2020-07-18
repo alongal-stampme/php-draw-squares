@@ -15,12 +15,12 @@ class JsonDocument
         $this->data = $data;
     }
 
-    public function search($phrase)
+    public function search($phrase, $exact = true)
     {
         $tokens = (new CharacterTokenizer())->tokenize($phrase);
         $symbols = $this->pluckSymbols();
 
-        $indices = $this->isIn($tokens, $symbols);
+        $indices = $this->isIn($tokens, $symbols, $exact);
 
         $array = [];
         foreach ($indices as $vertex) {
@@ -32,7 +32,7 @@ class JsonDocument
             $array[] = $tempArray;
         }
 
-        return $array[0];
+        return $array;
     }
 
     public function getWidth()
@@ -47,7 +47,16 @@ class JsonDocument
 
     public function getText()
     {
-        return explode(PHP_EOL, $this->data->responses[0]->fullTextAnnotation->text);
+//        return explode(PHP_EOL, $this->data->responses[0]->fullTextAnnotation->text);
+        $words = $this->getWords();
+
+        foreach ($words as $word) {
+            $text = [];
+            $text[] = $word;
+            if ($word->breakCharacter == "\n") {
+                $array[] = new Text($text);
+            }
+        }
     }
 
     public function getBoundingPoly()
@@ -90,11 +99,9 @@ class JsonDocument
 
         foreach ($this->data->responses[0]->fullTextAnnotation->pages[0]->blocks as $block) {
             foreach ($block->paragraphs as $paragraph) {
-//                $array[] = $paragraph->boundingBox->vertices;
                 foreach ($paragraph->words as $word) {
-                    $w = new Word();
-                    $w->setJson($word);
-                    $array[] = $w;
+                    if ($word->confidence < 0.8) continue;
+                    $array[] = new Word($word);
                 }
             }
         }
@@ -124,7 +131,7 @@ class JsonDocument
         return $array;
     }
 
-    private function isIn($short, $long)
+    private function isIn($short, $long, $exact)
     {
         $short = collect($short);
         $long = collect(json_decode(json_encode($long), true))->pluck('text');
@@ -137,12 +144,17 @@ class JsonDocument
                 foreach ($short as $j => $itemShort) {
                     if ($itemShort === $long[$i + $j]) {
                         $length++;
-//                        $temp[] = $long[$i + $j];
                         $temp[] = $i + $j;
                     }
                 }
                 if ($length === count($short)) {
-                    $array[] = $temp;
+                    if ($exact) {
+                        if ( ! in_array($long[$i + $j + 1], [
+                            '*',
+                        ])) $array[] = $temp;
+                    } else {
+                        $array[] = $temp;
+                    }
                 }
             }
         }
@@ -167,6 +179,11 @@ class JsonDocument
                 foreach ($paragraph->words as $word) {
                     foreach ($word->symbols as $symbol) {
                         $array[] = $symbol;
+                        if ($symbol->property->detectedBreak->type == 'SPACE') {
+                            $clone = clone $symbol;
+                            $clone->text = ' ';
+                            $array[] = $clone;
+                        }
                     }
                 }
             }
