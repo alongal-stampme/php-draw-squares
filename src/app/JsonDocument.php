@@ -4,11 +4,10 @@ namespace App;
 
 use App\NlpTools\GoogleOcrTokenizer;
 use App\NlpTools\CharacterTokenizer;
-use Tightenco\Collect\Support\Collection;
 
 class JsonDocument
 {
-    private $data;
+    public $data;
 
     public function __construct($data)
     {
