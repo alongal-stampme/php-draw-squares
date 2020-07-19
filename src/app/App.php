@@ -2,23 +2,28 @@
 
 namespace App;
 
-use App\Geometry\Line;
-use App\Geometry\Point;
-use App\Geometry\Vertex;
-
 class App
 {
     public function run()
     {
-        $image = '4pkg2q5hwo81mv6l';
+        $image = 'IMG_20200711_145840';
         $data = load_json_file($image . '.json');
 
         $document = new JsonDocument($data);
 
+        $text = $document->text;
+
         $canvas = new Canvas($image);
-        foreach ($document->data->responses[0]->textAnnotations as $textAnnotation) {
-            $canvas->draw((new Vertex())->fromJson($textAnnotation->boundingPoly->vertices));
-        }
+
+        dd($text->wordStream);
+        $canvas->draw($text->wordStream);
+        $canvas->draw($document);
+
+//        foreach ($words as $i => $word) {
+//            if ($i >= 0 && $i <= 0) {
+//                $canvas->draw($word->symbols);
+//            }
+//        }
 
         $canvas->output();
     }

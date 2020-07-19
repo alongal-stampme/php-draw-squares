@@ -29,6 +29,13 @@ class Vertex
         return $this;
     }
 
+    public function fromPoints(array $points)
+    {
+        $this->points = $points;
+        $this->setup();
+        return $this;
+    }
+
     private function calculateWidth()
     {
         $v = $this->points;

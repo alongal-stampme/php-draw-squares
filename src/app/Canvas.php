@@ -16,6 +16,7 @@ class Canvas
     {
         $this->image = $image;
         $this->canvas = imagecreatefrompng(__DIR__ . '/../image_files/' . $image . '.jpg');
+        imagesetthickness($this->canvas, 3);
         $this->colours = new Colours($this->canvas);
     }
 
@@ -33,7 +34,7 @@ class Canvas
             case Vertex::class:
                 $this->drawVertex($shape, $this->canvas, $colour);
                 break;
-            case false:
+            default:
                 $this->drawShapes($shape, $this->canvas, $colour);
                 break;
         }
@@ -72,7 +73,14 @@ class Canvas
 
     private function drawShapes($shapes, $canvas, $colour)
     {
-        foreach ($shapes as $shape) $this->draw($shape, $colour);
+        if ( ! is_array($shapes)) $shapes = [$shapes];
+        foreach ($shapes as $shape) {
+            if (isset($shape->vertices)) {
+                $this->draw($shape->vertices, $colour);
+                continue;
+            }
+            $this->draw($shape, $colour);
+        }
     }
 
     public function output()

@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Geometry\Vertex;
+
 class Symbol
 {
     protected $json;
@@ -14,7 +16,7 @@ class Symbol
     public function __construct($json = null)
     {
         $this->text = '';
-        $this->vertices = [];
+        $this->vertices = new Vertex();
         $this->confidence = 0.0;
         $this->break = null;
 
@@ -27,7 +29,7 @@ class Symbol
         $this->text = $json->text;
         $this->confidence = $json->confidence;
         $this->language = $json->property->detectedLanguages[0]->languageCode;
-        $this->vertices = $json->boundingBox->vertices;
+        $this->vertices->fromJson($json->boundingBox->vertices);
         $this->setBreak();
     }
 
