@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Geometry\VerticesFunctionality;
+
 class App
 {
     public function run()
@@ -13,10 +15,24 @@ class App
         $text = $document->text;
         $document->sortByYAxis();
 
-        dd(collect($text->wordStream)->first());
+//        dd($document->text->wordStream[19]);
 
         $canvas = new Canvas($image);
-        $canvas->draw(collect($text->wordStream)->first());
+
+        $ws1 = collect($text->wordStream)->get(19);
+        $ws2 = collect($text->wordStream)->get(20);
+        $canvas->draw([$ws1, $ws2]);
+
+        $functionality = new VerticesFunctionality();
+        if ($functionality->willCollide($ws1->vertices, $ws2->vertices)) {
+            dd($ws1->words);
+//            $ws3 = $ws1->merge($ws1);
+//            $canvas->draw($ws3, (new Colours($canvas->canvas))->yellow);
+        }
+
+//        dd($collision);
+//        $canvas->draw($collision, (new Colours($canvas->canvas))->yellow);
+
 //        $canvas->draw($document);
 
         $canvas->output();
