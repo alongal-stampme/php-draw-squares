@@ -52,14 +52,14 @@ class Vertex
     private function calculateCentre()
     {
         return (object)[
-            'x' => $this->points[0]->x + $this->width / 2 + 1,
-            'y' => $this->points[0]->y + $this->height / 2 + 1,
+            'x' => $this->points[0]->x + $this->width / 2,
+            'y' => $this->points[0]->y + $this->height / 2,
         ];
     }
 
     private function calculateArea()
     {
-        $this->area = $this->width * $this->height;
+        return $this->width * $this->height;
     }
 
     private function setup()
@@ -67,6 +67,7 @@ class Vertex
         $this->width = $this->calculateWidth();
         $this->height = $this->calculateHeight();
         $this->centre = $this->calculateCentre();
-        $this->centre = $this->calculateArea();
+        $this->area = $this->calculateArea();
+
     }
 }

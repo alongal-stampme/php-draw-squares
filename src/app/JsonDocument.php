@@ -23,6 +23,22 @@ class JsonDocument
         $this->vertices = (new Vertex())->fromJson($this->json->responses[0]->textAnnotations[0]->boundingPoly->vertices);
     }
 
+    public function sortByYAxis()
+    {
+        $result = collect($this->text->wordStream)->sortBy(function ($wordStream) {
+            return $wordStream->vertices->centre->y;
+        });
+        $this->text->wordStream = $result->toArray();
+    }
+
+    public function sortByXAxis()
+    {
+        $result = collect($this->text->wordStream)->sortBy(function ($wordStream) {
+            return $wordStream->vertices->centre->x;
+        });
+        $this->text->wordStream = $result->toArray();
+    }
+
     private function generateWords()
     {
         $array = [];

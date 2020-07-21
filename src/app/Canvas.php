@@ -9,14 +9,14 @@ use App\Geometry\Vertex;
 class Canvas
 {
     protected $image;
-    protected $canvas;
+    public $canvas;
     public $colours;
 
     public function __construct($image)
     {
         $this->image = $image;
         $this->canvas = imagecreatefrompng(__DIR__ . '/../image_files/' . $image . '.jpg');
-        imagesetthickness($this->canvas, 3);
+        imagesetthickness($this->canvas, 1);
         $this->colours = new Colours($this->canvas);
     }
 
