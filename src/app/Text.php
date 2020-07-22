@@ -42,7 +42,12 @@ class Text
     {
         $wordStart = $this->wordStream[0];
         $wordEnd = $this->wordStream[count($this->wordStream) - 1];
-        $merged = $wordStart->merge($wordEnd);
-        return $merged->vertices;
+
+        return new Vertex([
+            $wordStart->vertices->points[0],
+            $wordEnd->vertices->points[1],
+            $wordEnd->vertices->points[2],
+            $wordStart->vertices->points[3],
+        ]);
     }
 }

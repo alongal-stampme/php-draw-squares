@@ -21,13 +21,15 @@ class App
 
         $ws1 = collect($text->wordStream)->get(19);
         $ws2 = collect($text->wordStream)->get(20);
-        $canvas->draw([$ws1, $ws2]);
+//        $canvas->draw([$ws1, $ws2]);
+//        $ws3 = $ws1->merge($ws2);
+//        $canvas->draw($ws3);
 
         $functionality = new VerticesFunctionality();
         if ($functionality->willCollide($ws1->vertices, $ws2->vertices)) {
-            dd($ws1->words);
-//            $ws3 = $ws1->merge($ws1);
-//            $canvas->draw($ws3, (new Colours($canvas->canvas))->yellow);
+//            dd($ws1->words);
+            $ws3 = $ws1->merge($ws2);
+            $canvas->draw($ws3);
         }
 
 //        dd($collision);

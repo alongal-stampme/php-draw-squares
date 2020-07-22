@@ -10,8 +10,7 @@ class VerticesFunctionality
 
     public function willCollide(Vertex $v1, Vertex $v2)
     {
-        $new = clone $v2;
-        $new->moveOnTop($v1);
+        $new = $v2->moveOnTop($v1);
 
         if ($v1->points[1]->x <= $new->points[0]->x && $v1->points[1]->x <= $new->points[3]->x &&
             $v1->points[2]->x <= $new->points[0]->x && $v1->points[2]->x <= $new->points[3]->x) {

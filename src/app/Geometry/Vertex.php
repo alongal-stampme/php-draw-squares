@@ -38,11 +38,12 @@ class Vertex
 
     public function moveOnTop(Vertex $anotherVertex)
     {
-        $this->points[0]->x = $anotherVertex->points[0]->x;
-        $this->points[1]->x = $anotherVertex->points[1]->x + $this->width;
-        $this->points[2]->x = $anotherVertex->points[3]->x + $this->width;
-        $this->points[3]->x = $anotherVertex->points[3]->x;
-        return $this;
+        $new = new Vertex();
+        $new->points[0]->x = $anotherVertex->points[0]->x;
+        $new->points[1]->x = $anotherVertex->points[1]->x + $this->width;
+        $new->points[2]->x = $anotherVertex->points[3]->x + $this->width;
+        $new->points[3]->x = $anotherVertex->points[3]->x;
+        return $new;
     }
 
     private function calculateWidth()

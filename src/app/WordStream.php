@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Geometry\Vertex;
+
 class WordStream
 {
     public $words = [];
@@ -19,9 +21,8 @@ class WordStream
     {
         if ($this === $wordStream) return $this;
 
-        $outcome = new WordStream(
-            array_merge($this->words, $wordStream->words)
-        );
+        $new = array_merge($this->words, $wordStream->words);
+        $outcome = new WordStream($new);
         $outcome->text = $this->text . ' ' . $wordStream->text;
 
         return $outcome;
@@ -40,7 +41,12 @@ class WordStream
     {
         $wordStart = $this->words[0];
         $wordEnd = $this->words[count($this->words) - 1];
-        $merged = $wordStart->merge($wordEnd);
-        return $merged->vertices;
+
+        return new Vertex([
+            $wordStart->vertices->points[0],
+            $wordEnd->vertices->points[1],
+            $wordEnd->vertices->points[2],
+            $wordStart->vertices->points[3],
+        ]);
     }
 }
