@@ -61,12 +61,15 @@ class Canvas
 
     private function drawVertex(Vertex $vertex, $canvas, $colour)
     {
-        imagerectangle(
+        imagepolygon(
             $canvas,
-            $vertex->points[0]->x,
-            $vertex->points[0]->y,
-            $vertex->points[count($vertex->points) - 2]->x,
-            $vertex->points[count($vertex->points) - 2]->y,
+            [
+                $vertex->points[0]->x, $vertex->points[0]->y,
+                $vertex->points[1]->x, $vertex->points[1]->y,
+                $vertex->points[2]->x, $vertex->points[2]->y,
+                $vertex->points[3]->x, $vertex->points[3]->y,
+            ],
+            4,
             $colour
         );
     }

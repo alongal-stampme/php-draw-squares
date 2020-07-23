@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Geometry\Point;
 use App\Geometry\Vertex;
 
 class WordStream
@@ -42,11 +43,13 @@ class WordStream
         $wordStart = $this->words[0];
         $wordEnd = $this->words[count($this->words) - 1];
 
+        $p1 = new Point($wordEnd->vertices->points[2]->x, $wordStart->vertices->points[0]->y);
+        $p3 = new Point($wordStart->vertices->points[0]->x, $wordEnd->vertices->points[2]->y);
         return new Vertex([
             $wordStart->vertices->points[0],
-            $wordEnd->vertices->points[1],
+            $p1,
             $wordEnd->vertices->points[2],
-            $wordStart->vertices->points[3],
+            $p3,
         ]);
     }
 }

@@ -39,10 +39,18 @@ class Vertex
     public function moveOnTop(Vertex $anotherVertex)
     {
         $new = new Vertex();
-        $new->points[0]->x = $anotherVertex->points[0]->x;
-        $new->points[1]->x = $anotherVertex->points[1]->x + $this->width;
-        $new->points[2]->x = $anotherVertex->points[3]->x + $this->width;
-        $new->points[3]->x = $anotherVertex->points[3]->x;
+        $new->points[0]->x = $anotherVertex->points[2]->x - 1;
+        $new->points[0]->y = $this->points[0]->y;
+
+        $new->points[1]->x = $anotherVertex->points[2]->x + $this->width - 1;
+        $new->points[1]->y = $this->points[1]->y;
+
+        $new->points[2]->x = $anotherVertex->points[2]->x + $this->width - 1;
+        $new->points[2]->y = $this->points[2]->y;
+
+        $new->points[3]->x = $anotherVertex->points[2]->x - 1;
+        $new->points[3]->y = $this->points[3]->y;;
+
         return $new;
     }
 

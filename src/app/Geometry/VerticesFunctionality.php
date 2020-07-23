@@ -8,22 +8,28 @@ class VerticesFunctionality
     {
     }
 
-    public function willCollide(Vertex $v1, Vertex $v2)
+    public function willCollide(Vertex $a, Vertex $b)
     {
-        $new = $v2->moveOnTop($v1);
+        $new = $b->moveOnTop($a);
+//        return $new;
 
-        if ($v1->points[1]->x <= $new->points[0]->x && $v1->points[1]->x <= $new->points[3]->x &&
-            $v1->points[2]->x <= $new->points[0]->x && $v1->points[2]->x <= $new->points[3]->x) {
+        if ($a->points[1]->x <= $new->points[0]->x && $a->points[1]->x <= $new->points[3]->x &&
+            $a->points[2]->x <= $new->points[0]->x && $a->points[2]->x <= $new->points[3]->x) {
             return false;
         }
-        if ($v1->points[3]->y <= $new->points[0]->y && $v1->points[3]->y <= $new->points[2]->y &&
-            $v1->points[2]->y <= $new->points[0]->y && $v1->points[2]->y <= $new->points[2]->y) {
+        if ($a->points[3]->y <= $new->points[0]->y && $a->points[3]->y <= $new->points[2]->y &&
+            $a->points[2]->y <= $new->points[0]->y && $a->points[2]->y <= $new->points[2]->y) {
             return false;
         }
-        if ($new->points[0]->y >= $v1->points[3]->y && $new->points[0]->y >= $v1->points[2]->y &&
-            $new->points[1]->y >= $v1->points[3]->y && $new->points[1]->y >= $v1->points[2]->y) {
+        if ($new->points[0]->y >= $a->points[3]->y && $new->points[0]->y >= $a->points[2]->y &&
+            $new->points[1]->y >= $a->points[3]->y && $new->points[1]->y >= $a->points[2]->y) {
             return false;
         }
+        if ($new->points[3]->y <= $a->points[1]->y && $new->points[3]->y <= $a->points[0]->y &&
+            $new->points[2]->y <= $a->points[1]->y && $new->points[2]->y <= $a->points[0]->y) {
+            return false;
+        }
+
         return true;
     }
 }
