@@ -29,6 +29,11 @@ class WordStream
         return $outcome;
     }
 
+    public function characterCount()
+    {
+        return strlen($this->text);
+    }
+
     private function extractText()
     {
         $text = '';

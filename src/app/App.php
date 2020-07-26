@@ -10,11 +10,12 @@ class App
 {
     public function run()
     {
-        $image = '4pkg2q5hwo81mv6l';
+        $image = 'oscars-mexican-food';
         $data = load_json_file($image . '.json');
 
         $document = new JsonDocument($data);
         $text = $document->text;
+//        dd(count($document->text->wordStream));
 //        $document->sortByYAxis();
 
 
@@ -30,21 +31,22 @@ class App
         $array = [];
         $functionality = new VerticesFunctionality();
         foreach ($text->wordStream as $i => $wsi) {
-            foreach ($text->wordStream as $j => $wsj) {
-                $test = $functionality->willCollide($text->wordStream[$i]->vertices, $text->wordStream[$j]->vertices);
-                if ($test && ($i != $j) &&
-                    $text->wordStream[$i]->vertices->points[0]->x < $text->wordStream[$j]->vertices->points[0]->x) {
-//                    dump("[{$i}][{$j}] => {$test}");
-                    $ws = $text->wordStream[$i]->merge($text->wordStream[$j]);
-                    $array[] = $ws;
-                    dump($ws->text);
-                }
-            }
+//            foreach ($text->wordStream as $j => $wsj) {
+            $canvas->draw($document);
+            dump($text->wordStream[$i]);
+//                $test = $functionality->willCollide($text->wordStream[$i]->vertices, $text->wordStream[$j]->vertices);
+//                if ($test && ($i != $j) &&
+//                    $text->wordStream[$i]->vertices->points[0]->x < $text->wordStream[$j]->vertices->points[0]->x)
+//                    $ws = $text->wordStream[$i]->merge($text->wordStream[$j]);
+//                    $array[] = $ws;
+//                    dump($ws->text);
+//                }
+//            }
         }
-
-        foreach ($array as $ws) {
-            $canvas->draw($ws);
-        }
+//
+//        foreach ($array as $ws) {
+//            $canvas->draw($ws);
+//        }
 
 
 //        dd($collision);

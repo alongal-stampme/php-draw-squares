@@ -25,6 +25,15 @@ class Text
         return $this;
     }
 
+    public function characterCount()
+    {
+        $count = 0;
+        foreach ($this->wordStream as $ws) {
+            $count += $ws->characterCount();
+        }
+        return $count;
+    }
+
     private function extractWordStream($words)
     {
         $array = [];

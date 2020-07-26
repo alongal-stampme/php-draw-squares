@@ -39,6 +39,11 @@ class JsonDocument
         $this->text->wordStream = $result->toArray();
     }
 
+    public function characterCount()
+    {
+        return $this->text->characterCount();
+    }
+
     private function generateWords()
     {
         $array = [];
