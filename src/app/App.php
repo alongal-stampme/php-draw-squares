@@ -10,14 +10,20 @@ class App
 {
     public function run()
     {
-        $image = 'oscars-mexican-food';
+        $image = '4pkg2q5hwo81mv6l';
         $data = load_json_file($image . '.json');
 
         $document = new JsonDocument($data);
-        $text = $document->text;
-//        dd(count($document->text->wordStream));
-//        $document->sortByYAxis();
+        $wordStreamCount = count($document->text->wordStream);
+        $longestWordStreamText = strlen($document->text->sortByCharacterLength('desc')[0]->text);
+        $characterXRatio = round($document->vertices->width / $longestWordStreamText) + 1;
+        $characterYRatio = round($document->vertices->height / $wordStreamCount) + 1;
 
+        foreach ($document->text->wordStream as $ws) {
+            $x = round($ws->vertices->points[0]->x / $characterXRatio);
+            $y = round($ws->vertices->points[0]->y / $characterYRatio);
+            dump("({$x}, {$y}) ==> {$ws->text}");
+        }
 
         $canvas = new Canvas($image);
 //        $v = new Vertex([
@@ -30,10 +36,10 @@ class App
 
         $array = [];
         $functionality = new VerticesFunctionality();
-        foreach ($text->wordStream as $i => $wsi) {
+        foreach ($document->text->wordStream as $i => $wsi) {
 //            foreach ($text->wordStream as $j => $wsj) {
-            $canvas->draw($document);
-            dump($text->wordStream[$i]);
+//            $canvas->draw($document);
+//            dump($document->text->wordStream[$i]);
 //                $test = $functionality->willCollide($text->wordStream[$i]->vertices, $text->wordStream[$j]->vertices);
 //                if ($test && ($i != $j) &&
 //                    $text->wordStream[$i]->vertices->points[0]->x < $text->wordStream[$j]->vertices->points[0]->x)

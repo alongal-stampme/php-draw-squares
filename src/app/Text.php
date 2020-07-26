@@ -62,4 +62,18 @@ class Text
             $p3,
         ]);
     }
+
+    public function sortByCharacterLength($method = 'asc')
+    {
+        $result = collect($this->wordStream)->map(function ($ws) {
+            return strlen($ws->text);
+        })->sort();
+        if ($method == 'desc') $result = $result->sortDesc();
+
+        $array = [];
+        foreach ($result as $index => $ws) {
+            $array[] = $this->wordStream[$index];
+        }
+        return $array;
+    }
 }
