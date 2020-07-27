@@ -42,9 +42,16 @@ class Canvas
         return $this;
     }
 
-    private function drawPoint(Point $point, $canvas, $colour)
+    public function drawPoint(Point $point, $canvas, $colour)
     {
-        imagesetpixel($canvas, $point->x, $point->y, $colour);
+        imagefilledellipse(
+            $canvas,
+            $point->x,
+            $point->y,
+            15,
+            15,
+            $colour
+        );
     }
 
     private function drawLine(Line $line, $canvas, $colour)

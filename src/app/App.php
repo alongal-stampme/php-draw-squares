@@ -10,55 +10,45 @@ class App
 {
     public function run()
     {
-        $image = '4pkg2q5hwo81mv6l';
+        $image = 'x6bemq72ac5g1d3p';
         $data = load_json_file($image . '.json');
 
         $document = new JsonDocument($data);
         $wordStreamCount = count($document->text->wordStream);
         $longestWordStreamText = strlen($document->text->sortByCharacterLength('desc')[0]->text);
-        $characterXRatio = round($document->vertices->width / $longestWordStreamText) + 1;
-        $characterYRatio = round($document->vertices->height / $wordStreamCount) + 1;
+        $characterXRatio = $document->vertices->width / $longestWordStreamText;
+        $characterYRatio = $document->vertices->height / $wordStreamCount;
 
-        foreach ($document->text->wordStream as $ws) {
-            $x = round($ws->vertices->points[0]->x / $characterXRatio);
-            $y = round($ws->vertices->points[0]->y / $characterYRatio);
-            dump("({$x}, {$y}) ==> {$ws->text}");
-        }
+//        foreach ($document->text->wordStream as $ws) {
+//            $x = round($ws->vertices->centre->x / $characterXRatio);
+//            $y = round($ws->vertices->centre->y / $characterYRatio);
+//            dump("({$x}, {$y}) ==> {$ws->text}");
+//        }
 
         $canvas = new Canvas($image);
-//        $v = new Vertex([
-//            new Point(722, 235),
-//            new Point(955, 208),
-//            new Point(955, 954),
-//            new Point(722,981)
-//        ]);
-//        $canvas->draw($v);
 
         $array = [];
         $functionality = new VerticesFunctionality();
-        foreach ($document->text->wordStream as $i => $wsi) {
-//            foreach ($text->wordStream as $j => $wsj) {
-//            $canvas->draw($document);
-//            dump($document->text->wordStream[$i]);
-//                $test = $functionality->willCollide($text->wordStream[$i]->vertices, $text->wordStream[$j]->vertices);
-//                if ($test && ($i != $j) &&
-//                    $text->wordStream[$i]->vertices->points[0]->x < $text->wordStream[$j]->vertices->points[0]->x)
-//                    $ws = $text->wordStream[$i]->merge($text->wordStream[$j]);
-//                    $array[] = $ws;
-//                    dump($ws->text);
-//                }
-//            }
+
+        foreach ($document->text->wordStream as $index => $ws) {
+//            if ($index < 18 || $index > 20) continue;
+
+            $v = new Vertex([
+                new Point(0, $ws->vertices->points[0]->y),
+                new Point($document->width, $ws->vertices->points[1]->y),
+                new Point($document->width, $ws->vertices->points[2]->y),
+                new Point(0, $ws->vertices->points[3]->y),
+            ]);
+
+            $canvas->draw($ws->vertices->centre, $canvas->colours->purple);
+            $canvas->draw($ws);
+//            $canvas->draw($v);
+            $canvas->draw($v->centre, $canvas->colours->yellow);
+
+            $x = $ws->vertices->centre->x / $characterXRatio;
+            $y = $ws->vertices->centre->y / $characterYRatio;
+//            dump("({$x}, {$y}) ==> {$ws->text} ---- centre point=({$ws->vertices->centre->x}, {$ws->vertices->centre->y}) x-ratio={$characterXRatio}, y-ratio={$characterYRatio}");
         }
-//
-//        foreach ($array as $ws) {
-//            $canvas->draw($ws);
-//        }
-
-
-//        dd($collision);
-//        $canvas->draw($collision, (new Colours($canvas->canvas))->yellow);
-
-//        $canvas->draw($document);
 
         $canvas->output();
     }

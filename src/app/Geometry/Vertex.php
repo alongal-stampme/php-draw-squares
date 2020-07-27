@@ -69,10 +69,10 @@ class Vertex
 
     private function calculateCentre()
     {
-        return (object)[
-            'x' => $this->points[0]->x + $this->width / 2,
-            'y' => $this->points[0]->y + $this->height / 2,
-        ];
+        return new Point(
+            $this->points[0]->x + $this->width / 2,
+            $this->points[0]->y + $this->height / 2,
+        );
     }
 
     private function calculateArea()
