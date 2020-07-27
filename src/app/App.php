@@ -10,7 +10,7 @@ class App
 {
     public function run()
     {
-        $image = 'x6bemq72ac5g1d3p';
+        $image = '4pkg2q5hwo81mv6l';
         $data = load_json_file($image . '.json');
 
         $document = new JsonDocument($data);
@@ -47,7 +47,23 @@ class App
 
             $x = $ws->vertices->centre->x / $characterXRatio;
             $y = $ws->vertices->centre->y / $characterYRatio;
+            $array[] = [
+                'x' => $x,
+                'y' => $y,
+                'text' => $ws->text
+            ];
+
 //            dump("({$x}, {$y}) ==> {$ws->text} ---- centre point=({$ws->vertices->centre->x}, {$ws->vertices->centre->y}) x-ratio={$characterXRatio}, y-ratio={$characterYRatio}");
+        }
+
+        $array = collect($array)->sortBy('y')->values();
+        foreach ($array as $i => $itemI) {
+            foreach ($array as $j => $itemJ) {
+                $diff = $itemJ['y'] - $itemI['y'];
+                if ($diff > 0 && $diff < 0.6) {
+                    dump("{$i},{$j} === {$itemI['y']},{$itemJ['y']} === {$diff} === {$itemI['text']} || {$itemJ['text']}");
+                }
+            }
         }
 
         $canvas->output();
