@@ -10,14 +10,14 @@ class App
 {
     public function run()
     {
-        $image = '4pkg2q5hwo81mv6l';
+        $image = 'x6bemq72ac5g1d3p';
         $data = load_json_file($image . '.json');
 
         $document = new JsonDocument($data);
         $wordStreamCount = count($document->text->wordStream);
         $longestWordStreamText = strlen($document->text->sortByCharacterLength('desc')[0]->text);
-        $characterXRatio = $document->vertices->width / $longestWordStreamText;
-        $characterYRatio = $document->vertices->height / $wordStreamCount;
+        $characterXRatio = $document->vertices->width / $longestWordStreamText - 10;
+        $characterYRatio = $document->vertices->height / $wordStreamCount - 5;
 
 //        foreach ($document->text->wordStream as $ws) {
 //            $x = round($ws->vertices->centre->x / $characterXRatio);
@@ -26,10 +26,13 @@ class App
 //        }
 
         $canvas = new Canvas($image);
-
+        /*
+        foreach ($document->words as $word) {
+            $canvas->draw($word);
+        }
+        // */
+        /**/
         $array = [];
-        $functionality = new VerticesFunctionality();
-
         foreach ($document->text->wordStream as $index => $ws) {
 //            if ($index < 18 || $index > 20) continue;
 
@@ -52,20 +55,40 @@ class App
                 'y' => $y,
                 'text' => $ws->text
             ];
-
-//            dump("({$x}, {$y}) ==> {$ws->text} ---- centre point=({$ws->vertices->centre->x}, {$ws->vertices->centre->y}) x-ratio={$characterXRatio}, y-ratio={$characterYRatio}");
         }
-
         $array = collect($array)->sortBy('y')->values();
-        foreach ($array as $i => $itemI) {
-            foreach ($array as $j => $itemJ) {
-                $diff = $itemJ['y'] - $itemI['y'];
-                if ($diff > 0 && $diff < 0.6) {
-                    dump("{$i},{$j} === {$itemI['y']},{$itemJ['y']} === {$diff} === {$itemI['text']} || {$itemJ['text']}");
-                }
+        /**/
+
+        // Init multi dimensional array
+        $text = [];
+        for ($i = 0; $i < 100; $i++) {
+            for ($j = 0; $j < 100; $j++) {
+                $text[$i][$j] = ' ';
             }
         }
+        // Copy text into array
+        foreach ($array as $line) {
+            for ($i = 0; $i < strlen($line['text']); $i++) {
+                $y = (int)$line['y'];
+                $x = (int)$line['x'];
+                $text[$y][$x + $i] = $line['text'][$i];
+            }
+        }
+        // Write to file
+        $file = fopen("output.txt", "w+");
+        foreach ($text as $line) fwrite($file, implode('', $line) . PHP_EOL);
+        fclose($file);
 
-        $canvas->output();
+
+        //*/
+
+
+//        fwrite($file,$name.PHP_EOL);
+//        fwrite($file,$age.PHP_EOL);
+//        fwrite($file,$address.PHP_EOL);
+
+
+//        $canvas->output();
+        echo "<pre>" . file_get_contents('output.txt') . "</pre>";
     }
 }
