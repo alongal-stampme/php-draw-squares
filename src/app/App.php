@@ -19,19 +19,16 @@ class App
         $characterXRatio = $document->vertices->width / $longestWordStreamText - 10;
         $characterYRatio = $document->vertices->height / $wordStreamCount - 5;
 
-//        foreach ($document->text->wordStream as $ws) {
-//            $x = round($ws->vertices->centre->x / $characterXRatio);
-//            $y = round($ws->vertices->centre->y / $characterYRatio);
-//            dump("({$x}, {$y}) ==> {$ws->text}");
-//        }
-
         $canvas = new Canvas($image);
-        /*
-        foreach ($document->words as $word) {
-            $canvas->draw($word);
-        }
-        // */
         /**/
+//        foreach ($document->words as $index => $word) {
+        $canvas->draw($document->words[49]->vertices->median);
+        $canvas->draw($document->words[50]->vertices->median);
+//        dump($document->words[49]->vertices->median);
+//        dump($document->words[50]->vertices->median);
+//        }
+        // */
+        /*
         $array = [];
         foreach ($document->text->wordStream as $index => $ws) {
 //            if ($index < 18 || $index > 20) continue;
@@ -57,38 +54,10 @@ class App
             ];
         }
         $array = collect($array)->sortBy('y')->values();
-        /**/
-
-        // Init multi dimensional array
-        $text = [];
-        for ($i = 0; $i < 100; $i++) {
-            for ($j = 0; $j < 100; $j++) {
-                $text[$i][$j] = ' ';
-            }
-        }
-        // Copy text into array
-        foreach ($array as $line) {
-            for ($i = 0; $i < strlen($line['text']); $i++) {
-                $y = (int)$line['y'];
-                $x = (int)$line['x'];
-                $text[$y][$x + $i] = $line['text'][$i];
-            }
-        }
-        // Write to file
-        $file = fopen("output.txt", "w+");
-        foreach ($text as $line) fwrite($file, implode('', $line) . PHP_EOL);
-        fclose($file);
-
-
         //*/
+        $canvas->output();
 
-
-//        fwrite($file,$name.PHP_EOL);
-//        fwrite($file,$age.PHP_EOL);
-//        fwrite($file,$address.PHP_EOL);
-
-
-//        $canvas->output();
-        echo "<pre>" . file_get_contents('output.txt') . "</pre>";
+//        $output = $document->writeToFile($array->toArray(), 'output.txt');
+//        echo "<pre>" . $output . "</pre>";
     }
 }

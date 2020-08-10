@@ -9,7 +9,10 @@ class Vertex
     public $width;
     public $height;
     public $centre;
+    public $centreRight;
+    public $centreLeft;
     public $area;
+    public $median;
 
     public function __construct(array $points = null)
     {
@@ -75,9 +78,30 @@ class Vertex
         );
     }
 
+    private function calculateCentreRight()
+    {
+        return new Point(
+            ($this->points[1]->x + $this->points[2]->x) / 2,
+            ($this->points[1]->y + $this->points[2]->y) / 2
+        );
+    }
+
+    private function calculateCentreLeft()
+    {
+        return new Point(
+            ($this->points[0]->x + $this->points[3]->x) / 2,
+            ($this->points[0]->y + $this->points[3]->y) / 2
+        );
+    }
+
     private function calculateArea()
     {
         return $this->width * $this->height;
+    }
+
+    private function calculateMedian()
+    {
+        return new Line($this->centreLeft, $this->centreRight);
     }
 
     private function setup()
@@ -85,7 +109,10 @@ class Vertex
         $this->width = $this->calculateWidth();
         $this->height = $this->calculateHeight();
         $this->centre = $this->calculateCentre();
+        $this->centreRight = $this->calculateCentreRight();
+        $this->centreLeft = $this->calculateCentreLeft();
         $this->area = $this->calculateArea();
+        $this->median = $this->calculateMedian();
 
     }
 }

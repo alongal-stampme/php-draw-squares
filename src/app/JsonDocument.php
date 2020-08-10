@@ -44,6 +44,32 @@ class JsonDocument
         return $this->text->characterCount();
     }
 
+    public function writeToFile(array $data, $fileName)
+    {
+        // Init multi dimensional array
+        $text = [];
+        for ($i = 0; $i < 100; $i++) {
+            for ($j = 0; $j < 100; $j++) {
+                $text[$i][$j] = ' ';
+            }
+        }
+
+        // Copy text into array
+        foreach ($data as $line) {
+            for ($i = 0; $i < strlen($line['text']); $i++) {
+                $y = (int)$line['y'];
+                $x = (int)$line['x'];
+                $text[$y][$x + $i] = $line['text'][$i];
+            }
+        }
+        // Write to file
+        $file = fopen("output.txt", "w+");
+        foreach ($text as $line) fwrite($file, implode('', $line) . PHP_EOL);
+        fclose($file);
+
+        return file_get_contents($fileName);
+    }
+
     private function generateWords()
     {
         $array = [];
