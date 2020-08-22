@@ -5,6 +5,7 @@ namespace App;
 use App\Geometry\Line;
 use App\Geometry\Point;
 use App\Geometry\Vertex;
+use App\Geometry\FullScreenLine;
 
 class Canvas
 {
@@ -29,6 +30,7 @@ class Canvas
                 $this->drawPoint($shape, $this->canvas, $colour);
                 break;
             case Line::class:
+            case FullScreenLine::class:
                 $this->drawLine($shape, $this->canvas, $colour);
                 break;
             case Vertex::class:

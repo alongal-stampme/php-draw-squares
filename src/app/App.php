@@ -2,8 +2,10 @@
 
 namespace App;
 
+use App\Geometry\Line;
 use App\Geometry\Point;
 use App\Geometry\Vertex;
+use App\Geometry\FullScreenLine;
 use App\Geometry\VerticesFunctionality;
 
 class App
@@ -22,8 +24,12 @@ class App
         $canvas = new Canvas($image);
         /**/
 //        foreach ($document->words as $index => $word) {
-        $canvas->draw($document->words[49]->vertices->median);
-        $canvas->draw($document->words[50]->vertices->median);
+        $canvas->draw($document->words[31]->vertices);
+        $canvas->draw(new FullScreenLine($document->words[31]->vertices->median));
+        $canvas->draw($document->words[32]->vertices);
+        $canvas->draw(new FullScreenLine($document->words[32]->vertices->median), $canvas->colours->yellow);
+
+
 //        dump($document->words[49]->vertices->median);
 //        dump($document->words[50]->vertices->median);
 //        }
