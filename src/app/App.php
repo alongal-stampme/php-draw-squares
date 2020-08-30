@@ -10,6 +10,7 @@ use App\Geometry\VerticesFunctionality;
 
 class App
 {
+    // wip
     public function run()
     {
         $image = 'x6bemq72ac5g1d3p';
