@@ -13,7 +13,7 @@ class App
     // wip
     public function run()
     {
-        $image = 'x6bemq72ac5g1d3p';
+        $image = 'IMG_20200901_102427';
         $data = load_json_file($image . '.json');
 
         $document = new JsonDocument($data);
@@ -25,11 +25,17 @@ class App
         $canvas = new Canvas($image);
         /**/
 //        foreach ($document->words as $index => $word) {
-        $canvas->draw($document->words[31]->vertices);
-        $canvas->draw(new FullScreenLine($document->words[31]->vertices->median));
-        $canvas->draw($document->words[32]->vertices);
-        $canvas->draw(new FullScreenLine($document->words[32]->vertices->median), $canvas->colours->yellow);
+//            if ($index >= 12 && $index <= 13) {
+//                $canvas->draw($word->vertices);
+//            }
 
+        $line1 = new FullScreenLine($document->words[12]->vertices->median);
+        $line2 = new FullScreenLine($document->words[13]->vertices->median);
+        $canvas->draw($line1);
+        $canvas->draw($line2, $canvas->colours->yellow);
+
+        $collisionPoint = $line1->collision($line2);    // should be allowed to check collision with any shape
+        // should return the point of the first collision if exists and if doesn't exist then eturn null
 
 //        dump($document->words[49]->vertices->median);
 //        dump($document->words[50]->vertices->median);

@@ -17,7 +17,7 @@ class FullScreenLine extends Line
     {
         $this->points[0]->x = 0;
         $this->points[0]->y = $this->b;
-        $this->points[1]->x = 1500;
-        $this->points[1]->y = $this->slope * 1500 + $this->b;
+        $this->points[1]->x = 5500;
+        $this->points[1]->y = $this->slope * 5500 + $this->b;
     }
 }
