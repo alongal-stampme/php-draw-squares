@@ -35,7 +35,7 @@ class App
         $canvas->draw($line2, $canvas->colours->yellow);
 
         $collisionPoint = $line1->collision($line2);    // should be allowed to check collision with any shape
-        // should return the point of the first collision if exists and if doesn't exist then eturn null
+        // should return the point of the first collision if exists and if doesn't exist then return null
 
 //        dump($document->words[49]->vertices->median);
 //        dump($document->words[50]->vertices->median);

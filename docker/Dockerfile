@@ -32,6 +32,9 @@ RUN chmod +x /usr/local/bin/r
 COPY docker/install-create-project.sh /usr/local/bin/create-project
 RUN chmod +x /usr/local/bin/create-project
 
+RUN ln -sf /proc/self/fd/1 /var/log/apache2/access.log && \
+    ln -sf /proc/self/fd/1 /var/log/apache2/error.log
+
 WORKDIR /var/www/html
 
 CMD ["/usr/local/bin/start"]
