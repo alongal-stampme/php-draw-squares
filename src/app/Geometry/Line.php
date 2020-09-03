@@ -17,6 +17,19 @@ class Line
         $this->b = $this->calculateB();
     }
 
+    public function collision(Line $line): Point
+    {
+        $s1 = $this->slope;
+        $s2 = $line->slope;
+        $b1 = $this->b;
+        $b2 = $line->b;
+
+        $x = ($b2 - $b1) / ($s1 - $s2);
+        $y = ($s1 * $x) + $b1;
+
+        return new Point($x, $y);
+    }
+
     protected function calculateCentre()
     {
         return new Point(

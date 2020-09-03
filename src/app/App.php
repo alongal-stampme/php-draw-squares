@@ -25,52 +25,57 @@ class App
         $canvas = new Canvas($image);
         /**/
 //        foreach ($document->words as $index => $word) {
-//            if ($index >= 12 && $index <= 13) {
-//                $canvas->draw($word->vertices);
-//            }
+        $i1 = 0;
+        $i2 = 6;
+//            if ($index >= $i1 && $index <= $i2) {
+        $canvas->draw($document->words[$i1]->vertices);
+        $canvas->draw($document->words[$i2]->vertices, $canvas->colours->yellow);
 
-        $line1 = new FullScreenLine($document->words[12]->vertices->median);
-        $line2 = new FullScreenLine($document->words[13]->vertices->median);
+        $line1 = new FullScreenLine($document->words[$i1]->vertices->median);
+        $line2 = new FullScreenLine($document->words[$i2]->vertices->median);
         $canvas->draw($line1);
         $canvas->draw($line2, $canvas->colours->yellow);
 
         $collisionPoint = $line1->collision($line2);    // should be allowed to check collision with any shape
+        $canvas->draw($collisionPoint, $canvas->colours->purple);
+//                dd($collisionPoint);
+//            }
         // should return the point of the first collision if exists and if doesn't exist then return null
 
 //        dump($document->words[49]->vertices->median);
 //        dump($document->words[50]->vertices->median);
-//        }
-        // */
-        /*
-        $array = [];
-        foreach ($document->text->wordStream as $index => $ws) {
+//    }
+    // */
+    /*
+    $array = [];
+    foreach ($document->text->wordStream as $index => $ws) {
 //            if ($index < 18 || $index > 20) continue;
 
-            $v = new Vertex([
-                new Point(0, $ws->vertices->points[0]->y),
-                new Point($document->width, $ws->vertices->points[1]->y),
-                new Point($document->width, $ws->vertices->points[2]->y),
-                new Point(0, $ws->vertices->points[3]->y),
-            ]);
+        $v = new Vertex([
+            new Point(0, $ws->vertices->points[0]->y),
+            new Point($document->width, $ws->vertices->points[1]->y),
+            new Point($document->width, $ws->vertices->points[2]->y),
+            new Point(0, $ws->vertices->points[3]->y),
+        ]);
 
-            $canvas->draw($ws->vertices->centre, $canvas->colours->purple);
-            $canvas->draw($ws);
+        $canvas->draw($ws->vertices->centre, $canvas->colours->purple);
+        $canvas->draw($ws);
 //            $canvas->draw($v);
-            $canvas->draw($v->centre, $canvas->colours->yellow);
+        $canvas->draw($v->centre, $canvas->colours->yellow);
 
-            $x = $ws->vertices->centre->x / $characterXRatio;
-            $y = $ws->vertices->centre->y / $characterYRatio;
-            $array[] = [
-                'x' => $x,
-                'y' => $y,
-                'text' => $ws->text
-            ];
-        }
-        $array = collect($array)->sortBy('y')->values();
-        //*/
-        $canvas->output();
+        $x = $ws->vertices->centre->x / $characterXRatio;
+        $y = $ws->vertices->centre->y / $characterYRatio;
+        $array[] = [
+            'x' => $x,
+            'y' => $y,
+            'text' => $ws->text
+        ];
+    }
+    $array = collect($array)->sortBy('y')->values();
+    //*/
+$canvas->output();
 
 //        $output = $document->writeToFile($array->toArray(), 'output.txt');
 //        echo "<pre>" . $output . "</pre>";
-    }
+}
 }
