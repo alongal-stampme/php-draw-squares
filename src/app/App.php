@@ -36,8 +36,9 @@ class App
         $canvas->draw($line1);
         $canvas->draw($line2, $canvas->colours->yellow);
 
-        $collisionPoint = $line1->collision($line2);    // should be allowed to check collision with any shape
-        $canvas->draw($collisionPoint, $canvas->colours->purple);
+        $collision = $line1->collisionWithLine($line2);    // should be allowed to check collision with any shape
+        $collision = $line1->collisionWithBox($document->words[$i1]->vertices);    // should be allowed to check collision with any shape
+        $canvas->draw($collision->point, $canvas->colours->purple);
 //                dd($collisionPoint);
 //            }
         // should return the point of the first collision if exists and if doesn't exist then return null
