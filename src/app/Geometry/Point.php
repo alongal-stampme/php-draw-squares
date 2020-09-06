@@ -21,4 +21,11 @@ class Point
         $this->y = $json->y;
         return $this;
     }
+
+    public function distanceFromPoint(Point $point)
+    {
+        $a = ($this->x - $point->x);
+        $b = ($this->y - $point->y);
+        return sqrt($a * $a + $b * $b);
+    }
 }

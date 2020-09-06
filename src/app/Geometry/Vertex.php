@@ -52,9 +52,14 @@ class Vertex
         $new->points[2]->y = $this->points[2]->y;
 
         $new->points[3]->x = $anotherVertex->points[2]->x - 1;
-        $new->points[3]->y = $this->points[3]->y;;
+        $new->points[3]->y = $this->points[3]->y;
 
         return $new;
+    }
+
+    public function distanceFromBox(Vertex $vertex): Line
+    {
+        return new Line($this->centre, $vertex->centre);
     }
 
     private function calculateWidth()

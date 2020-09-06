@@ -2,11 +2,7 @@
 
 namespace App;
 
-use App\Geometry\Line;
-use App\Geometry\Point;
-use App\Geometry\Vertex;
 use App\Geometry\FullScreenLine;
-use App\Geometry\VerticesFunctionality;
 
 class App
 {
@@ -14,69 +10,33 @@ class App
     public function run()
     {
         $image = 'IMG_20200901_102427';
-        $data = load_json_file($image . '.json');
-
-        $document = new JsonDocument($data);
-        $wordStreamCount = count($document->text->wordStream);
-        $longestWordStreamText = strlen($document->text->sortByCharacterLength('desc')[0]->text);
-        $characterXRatio = $document->vertices->width / $longestWordStreamText - 10;
-        $characterYRatio = $document->vertices->height / $wordStreamCount - 5;
-
+        $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
+
         /**/
-//        foreach ($document->words as $index => $word) {
-        $i1 = 0;
-        $i2 = 6;
+        for ($i = 0; $i < count($document->words); $i++) {
+            $i1 = $i;
+
+            for ($j = 0; $j < count($document->words); $j++) {
+                $i2 = $j;
+
 //            if ($index >= $i1 && $index <= $i2) {
-        $canvas->draw($document->words[$i1]->vertices);
-        $canvas->draw($document->words[$i2]->vertices, $canvas->colours->yellow);
+                $canvas->draw($document->words[$i1]->vertices);
+                $canvas->draw($document->words[$i2]->vertices, $canvas->colours->yellow);
 
-        $line1 = new FullScreenLine($document->words[$i1]->vertices->median);
-        $line2 = new FullScreenLine($document->words[$i2]->vertices->median);
-        $canvas->draw($line1);
-        $canvas->draw($line2, $canvas->colours->yellow);
+                $line = new FullScreenLine($document->words[$i1]->vertices->median);
+                if ($line->slope > -0.1 && $line->slope < 0.1 ) {
+                    $canvas->draw($line, $canvas->colours->purple);
+                }
 
-        $collision = $line1->collisionWithLine($line2);    // should be allowed to check collision with any shape
-        $collision = $line1->collisionWithBox($document->words[$i1]->vertices);    // should be allowed to check collision with any shape
-        $canvas->draw($collision->point, $canvas->colours->purple);
-//                dd($collisionPoint);
-//            }
+//        dd($distance);
+            }
+        }
         // should return the point of the first collision if exists and if doesn't exist then return null
 
-//        dump($document->words[49]->vertices->median);
-//        dump($document->words[50]->vertices->median);
-//    }
-    // */
-    /*
-    $array = [];
-    foreach ($document->text->wordStream as $index => $ws) {
-//            if ($index < 18 || $index > 20) continue;
-
-        $v = new Vertex([
-            new Point(0, $ws->vertices->points[0]->y),
-            new Point($document->width, $ws->vertices->points[1]->y),
-            new Point($document->width, $ws->vertices->points[2]->y),
-            new Point(0, $ws->vertices->points[3]->y),
-        ]);
-
-        $canvas->draw($ws->vertices->centre, $canvas->colours->purple);
-        $canvas->draw($ws);
-//            $canvas->draw($v);
-        $canvas->draw($v->centre, $canvas->colours->yellow);
-
-        $x = $ws->vertices->centre->x / $characterXRatio;
-        $y = $ws->vertices->centre->y / $characterYRatio;
-        $array[] = [
-            'x' => $x,
-            'y' => $y,
-            'text' => $ws->text
-        ];
-    }
-    $array = collect($array)->sortBy('y')->values();
-    //*/
-$canvas->output();
+        $canvas->output();
 
 //        $output = $document->writeToFile($array->toArray(), 'output.txt');
 //        echo "<pre>" . $output . "</pre>";
-}
+    }
 }
