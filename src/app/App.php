@@ -9,25 +9,24 @@ class App
     // wip
     public function run()
     {
-        $image = 'IMG_20200901_102427';
+        $image = 'IMG_20200907_1308045';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
+        $this->drawAllWords($document, $canvas);
+
         /**/
         for ($i = 0; $i < count($document->words); $i++) {
+            if ($i !== 31 && $i !== 31) continue;
             $i1 = $i;
 
             for ($j = 0; $j < count($document->words); $j++) {
                 $i2 = $j;
 
-//            if ($index >= $i1 && $index <= $i2) {
                 $canvas->draw($document->words[$i1]->vertices);
-                $canvas->draw($document->words[$i2]->vertices, $canvas->colours->yellow);
 
                 $line = new FullScreenLine($document->words[$i1]->vertices->median);
-                if ($line->slope > -0.1 && $line->slope < 0.1 ) {
-                    $canvas->draw($line, $canvas->colours->purple);
-                }
+                $canvas->draw($line, $canvas->colours->purple);
 
 //        dd($distance);
             }
@@ -38,5 +37,15 @@ class App
 
 //        $output = $document->writeToFile($array->toArray(), 'output.txt');
 //        echo "<pre>" . $output . "</pre>";
+    }
+
+    private function drawAllWords(JsonDocument $document, Canvas $canvas)
+    {
+        for ($i = 0; $i < count($document->words); $i++) {
+            $canvas->draw(
+                $document->words[$i]->vertices,
+                $canvas->colours->yellow
+            );
+        }
     }
 }
