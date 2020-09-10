@@ -36,26 +36,55 @@ class Line
         $x = ($b2 - $b1) / ($s1 - $s2);
         $y = ($s1 * $x) + $b1;
 
-        return new Point($x, $y);
+        $collisionPoint = new Point($x, $y);
+
+        // We got a collision point but now we need to check if this point
+        // is actually on the line. We use the following formula:
+        // https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
+        /*
+            if (distance(a, c) + distance(B, C) == distance(A, B))
+                return true; // C is on the line.
+            return false;    // C is not on the line.
+         */
+
+        $a = $line->points[0];
+        $b = $line->points[1];
+        $c = $collisionPoint;
+
+        if ($a->distanceFromPoint($c) + $b->distanceFromPoint($c) == $a->distanceFromPoint($b)) {
+            return $collisionPoint;
+        }
+
+        return new NullPoint();
     }
 
     // maybe to delete
-    public function collisionWithBox(Vertex $vertex, $canvas): Point
+    public function collisionWithBox(Vertex $vertex, $canvas = null): Point
     {
         $line0 = new Line($vertex->points[0], $vertex->points[1]);
         $line1 = new Line($vertex->points[1], $vertex->points[2]);
         $line2 = new Line($vertex->points[2], $vertex->points[3]);
         $line3 = new Line($vertex->points[3], $vertex->points[0]);
 
+        if ($canvas) {
+            $canvas->draw($line0, $canvas->colours->purple);
+            $canvas->draw($line1, $canvas->colours->purple);
+            $canvas->draw($line2, $canvas->colours->purple);
+            $canvas->draw($line3, $canvas->colours->purple);
+        }
+
         $c0 = $this->collisionWithLine($line0);
         $c1 = $this->collisionWithLine($line1);
         $c2 = $this->collisionWithLine($line2);
         $c3 = $this->collisionWithLine($line3);
 
-        $canvas->draw($c0, $canvas->colours->purple);
-        $canvas->draw($c1, $canvas->colours->purple);
-        $canvas->draw($c2, $canvas->colours->purple);
-        $canvas->draw($c3, $canvas->colours->purple);
+
+        if ($canvas) {
+            $canvas->draw($c0, $canvas->colours->purple);
+            $canvas->draw($c1, $canvas->colours->purple);
+            $canvas->draw($c2, $canvas->colours->purple);
+            $canvas->draw($c3, $canvas->colours->purple);
+        }
 
         return new Point();
     }

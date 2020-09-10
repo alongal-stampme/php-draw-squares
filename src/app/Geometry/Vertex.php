@@ -62,6 +62,11 @@ class Vertex
         return new Line($this->centre, $vertex->centre);
     }
 
+    public function fullScreenLine()
+    {
+        return new FullScreenLine($this->median);
+    }
+
     private function calculateWidth()
     {
         $v = $this->points;

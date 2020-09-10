@@ -16,21 +16,17 @@ class App
         $this->drawAllWords($document, $canvas);
 
         /**/
-        for ($i = 0; $i < count($document->words); $i++) {
-            if ($i !== 31 && $i !== 31) continue;
-            $i1 = $i;
+        $vertex31 = $document->words[31]->vertices;
+        $vertex29 = $document->words[35]->vertices;
+        $line31 = $document->words[31]->vertices->fullScreenLine();
 
-            for ($j = 0; $j < count($document->words); $j++) {
-                $i2 = $j;
+        $canvas->draw($vertex31);
+        $canvas->draw($vertex29);
+        $canvas->draw($line31, $canvas->colours->purple);
 
-                $canvas->draw($document->words[$i1]->vertices);
+        $collision = $line31->collisionWithBox($vertex29, $canvas);
 
-                $line = new FullScreenLine($document->words[$i1]->vertices->median);
-                $canvas->draw($line, $canvas->colours->purple);
-
-//        dd($distance);
-            }
-        }
+        /**/
         // should return the point of the first collision if exists and if doesn't exist then return null
 
         $canvas->output();

@@ -37,7 +37,6 @@ class Canvas
                 $this->drawVertex($shape, $this->canvas, $colour);
                 break;
             default:
-                $this->drawShapes($shape, $this->canvas, $colour);
                 break;
         }
 
