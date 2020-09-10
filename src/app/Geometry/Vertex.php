@@ -116,6 +116,8 @@ class Vertex
 
     private function setup()
     {
+        if (is_null($this->points)) return;
+
         $this->width = $this->calculateWidth();
         $this->height = $this->calculateHeight();
         $this->centre = $this->calculateCentre();

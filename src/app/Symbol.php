@@ -26,11 +26,17 @@ class Symbol
     public function setJson($json)
     {
         $this->json = $json;
+
+        $this->vertices->fromJson($json->boundingBox->vertices);
         $this->text = $json->text;
         $this->confidence = $json->confidence;
-        $this->language = $json->property->detectedLanguages[0]->languageCode;
-        $this->vertices->fromJson($json->boundingBox->vertices);
-        $this->setBreak();
+
+        if ($this->language) {
+            $this->language = $json->property->detectedLanguages[0]->languageCode;
+        }
+        if (isset($this->json->property->detectedBreak)) {
+            $this->setBreak();
+        }
     }
 
     public function setText($text)
@@ -51,6 +57,8 @@ class Symbol
 
     public function breakCharacter()
     {
+        if (! $this->break) return;
+
         $breaks = [
             'LINE_BREAK' => "\n",
             'EOL_SURE_SPACE' => "\n",
