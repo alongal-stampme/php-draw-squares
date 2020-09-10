@@ -18,10 +18,10 @@ class App
         $this->drawAllWords($document, $canvas);
 
         /**/
-//        $collision = $document->words[23]->vertices->collision(
-//            $document->words[26]->vertices
-//        );
-//        $canvas->draw($collision);
+        $collision = $document->words[23]->vertices->collision(
+            $document->words[26]->vertices
+        );
+        $canvas->draw($collision);
 
 
 
