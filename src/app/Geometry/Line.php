@@ -58,37 +58,6 @@ class Line
         return new NullPoint();
     }
 
-    // maybe to delete
-    public function collisionWithBox(Vertex $vertex, $canvas = null): Point
-    {
-        $line0 = new Line($vertex->points[0], $vertex->points[1]);
-        $line1 = new Line($vertex->points[1], $vertex->points[2]);
-        $line2 = new Line($vertex->points[2], $vertex->points[3]);
-        $line3 = new Line($vertex->points[3], $vertex->points[0]);
-
-        if ($canvas) {
-            $canvas->draw($line0, $canvas->colours->purple);
-            $canvas->draw($line1, $canvas->colours->purple);
-            $canvas->draw($line2, $canvas->colours->purple);
-            $canvas->draw($line3, $canvas->colours->purple);
-        }
-
-        $c0 = $this->collisionWithLine($line0);
-        $c1 = $this->collisionWithLine($line1);
-        $c2 = $this->collisionWithLine($line2);
-        $c3 = $this->collisionWithLine($line3);
-
-
-        if ($canvas) {
-            $canvas->draw($c0, $canvas->colours->purple);
-            $canvas->draw($c1, $canvas->colours->purple);
-            $canvas->draw($c2, $canvas->colours->purple);
-            $canvas->draw($c3, $canvas->colours->purple);
-        }
-
-        return new Point();
-    }
-
     protected function calculateCentre()
     {
         return new Point(

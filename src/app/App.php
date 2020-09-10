@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Geometry\Collision;
 use App\Geometry\FullScreenLine;
+use App\Geometry\NullCollision;
 
 class App
 {
@@ -16,15 +18,22 @@ class App
         $this->drawAllWords($document, $canvas);
 
         /**/
-        $vertex31 = $document->words[31]->vertices;
-        $vertex29 = $document->words[35]->vertices;
-        $line31 = $document->words[31]->vertices->fullScreenLine();
+//        $collision = $document->words[23]->vertices->collision(
+//            $document->words[26]->vertices
+//        );
+//        $canvas->draw($collision);
 
-        $canvas->draw($vertex31);
-        $canvas->draw($vertex29);
-        $canvas->draw($line31, $canvas->colours->purple);
 
-        $collision = $line31->collisionWithBox($vertex29, $canvas);
+
+//        $line = $document->words[23]->vertices->fullScreenLine();
+//        $canvas->draw($document->words[23]->vertices);
+//        $canvas->draw($line, $canvas->colours->purple);
+//
+//        $collision = $line->collisionWithBox($document->words[26]->vertices, $canvas);
+//        if ( ! $collision instanceof NullCollision) {
+//            $canvas->draw($document->words[26]->vertices);
+//        }
+//        dd($collision);
 
         /**/
         // should return the point of the first collision if exists and if doesn't exist then return null
