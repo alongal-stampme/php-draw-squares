@@ -28,18 +28,17 @@ class FullScreenLine extends Line
         $line2 = new Line($vertex->points[2], $vertex->points[3]);
         $line3 = new Line($vertex->points[3], $vertex->points[0]);
 
-        if ($canvas) {
-            $canvas->draw($line0, $canvas->colours->purple);
-            $canvas->draw($line1, $canvas->colours->purple);
-            $canvas->draw($line2, $canvas->colours->purple);
-            $canvas->draw($line3, $canvas->colours->purple);
-        }
-
         $c0 = $this->collisionWithLine($line0);
         $c1 = $this->collisionWithLine($line1);
         $c2 = $this->collisionWithLine($line2);
         $c3 = $this->collisionWithLine($line3);
 
+        $collisionPoints = [];
+        if (!$c0 instanceof NullPoint) $collisionPoints[] = $c0;
+        if (!$c1 instanceof NullPoint) $collisionPoints[] = $c1;
+        if (!$c2 instanceof NullPoint) $collisionPoints[] = $c2;
+        if (!$c3 instanceof NullPoint) $collisionPoints[] = $c3;
+        $collisionPoints = collect($collisionPoints);
 
         if ($canvas) {
             $canvas->draw($c0, $canvas->colours->purple);
@@ -48,11 +47,12 @@ class FullScreenLine extends Line
             $canvas->draw($c3, $canvas->colours->purple);
         }
 
-        if ($c0 instanceof NullPoint &&
-            $c1 instanceof NullPoint &&
-            $c2 instanceof NullPoint &&
-            $c3 instanceof NullPoint) return new NullCollision();
+        if ($collisionPoints->isEmpty()) return new NullCollision();
 
-        return new Collision();
+        return new Collision(
+            $this,
+            $vertex,
+            $collisionPoints
+        );
     }
 }

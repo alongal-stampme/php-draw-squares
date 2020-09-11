@@ -39,24 +39,6 @@ class Vertex
         return $this;
     }
 
-    public function moveOnTop(Vertex $anotherVertex)
-    {
-        $new = new Vertex();
-        $new->points[0]->x = $anotherVertex->points[2]->x - 1;
-        $new->points[0]->y = $this->points[0]->y;
-
-        $new->points[1]->x = $anotherVertex->points[2]->x + $this->width - 1;
-        $new->points[1]->y = $this->points[1]->y;
-
-        $new->points[2]->x = $anotherVertex->points[2]->x + $this->width - 1;
-        $new->points[2]->y = $this->points[2]->y;
-
-        $new->points[3]->x = $anotherVertex->points[2]->x - 1;
-        $new->points[3]->y = $this->points[3]->y;
-
-        return $new;
-    }
-
     public function distanceFromBox(Vertex $vertex): Line
     {
         return new Line($this->centre, $vertex->centre);
@@ -65,6 +47,22 @@ class Vertex
     public function fullScreenLine()
     {
         return new FullScreenLine($this->median);
+    }
+
+    public function collision(Vertex $vertex, $canvas = null)
+    {
+        $line = $this->fullScreenLine();
+
+        if ($canvas) {
+            $canvas->draw($this);
+            $canvas->draw($vertex, $canvas->colours->green);
+            $canvas->draw($line, $canvas->colours->purple);
+        }
+
+        $collision = $line->collisionWithBox($vertex, $canvas);
+        $collision->originVertex = $this;
+        $collision->fullScreenLine = $line;
+        return $collision;
     }
 
     private function calculateWidth()

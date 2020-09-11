@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Geometry\Collision;
 use App\Geometry\Line;
 use App\Geometry\Point;
 use App\Geometry\Vertex;
@@ -23,7 +24,7 @@ class Canvas
 
     public function draw($shape, $colour = null)
     {
-        if ( ! $colour) $colour = $this->colours->red;
+        if (!$colour) $colour = $this->colours->red;
 
         switch (get_class($shape)) {
             case Point::class:
@@ -35,6 +36,14 @@ class Canvas
                 break;
             case Vertex::class:
                 $this->drawVertex($shape, $this->canvas, $colour);
+                break;
+            case Collision::class:
+                $this->drawVertex($shape->originVertex, $this->canvas, $colour);
+                $this->drawVertex($shape->destinationVertex, $this->canvas, $colour);
+                $this->drawLine($shape->fullScreenLine, $this->canvas, $colour);
+                foreach ($shape->collisionPoints as $point) {
+                    $this->drawPoint($point, $this->canvas, $colour);
+                }
                 break;
             default:
                 break;
@@ -84,7 +93,7 @@ class Canvas
 
     private function drawShapes($shapes, $canvas, $colour)
     {
-        if ( ! is_array($shapes)) $shapes = [$shapes];
+        if (!is_array($shapes)) $shapes = [$shapes];
         foreach ($shapes as $shape) {
             if (isset($shape->vertices)) {
                 $this->draw($shape->vertices, $colour);
