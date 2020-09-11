@@ -21,6 +21,7 @@ class App
 //            $index = $j;
         $index = 25;
         $word0 = $document->words[$index];
+        // TODO work on this one next
         $word1 = $document->closestWordToWord($word0);
 
         $canvas->draw($word0->vertices, $canvas->colours->purple);
