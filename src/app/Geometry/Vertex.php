@@ -62,6 +62,7 @@ class Vertex
         $collision = $line->collisionWithBox($vertex, $canvas);
         $collision->originVertex = $this;
         $collision->fullScreenLine = $line;
+        $collision->calculateDistance();
         return $collision;
     }
 

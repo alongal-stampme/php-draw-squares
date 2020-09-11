@@ -8,7 +8,7 @@ class Line
     public $centre;
     public $slope;
     public $b;
-    public $distance;
+    public $length;
 
     public function __construct(Point $point1 = null, Point $point2 = null)
     {
@@ -16,7 +16,7 @@ class Line
         $this->centre = $this->calculateCentre();
         $this->slope = $this->calculateSlope();
         $this->b = $this->calculateB();
-        $this->distance = $this->calculateDistance();
+        $this->length = $this->calculateLength();
     }
 
     // maybe to delete
@@ -26,7 +26,7 @@ class Line
     }
 
     // maybe to delete
-    public function collisionWithLine(Line $line): Point
+    public function collisionWithLine(Line $line, $canvas = null): Point
     {
         $s1 = $this->slope;
         $s2 = $line->slope;
@@ -37,6 +37,9 @@ class Line
         $y = ($s1 * $x) + $b1;
 
         $collisionPoint = new Point($x, $y);
+        if ($canvas) {
+            $canvas->draw($collisionPoint, $canvas->colours->purple);
+        }
 
         // We got a collision point but now we need to check if this point
         // is actually on the line. We use the following formula:
@@ -51,7 +54,22 @@ class Line
         $b = $line->points[1];
         $c = $collisionPoint;
 
-        if ($a->distanceFromPoint($c) + $b->distanceFromPoint($c) == $a->distanceFromPoint($b)) {
+
+        $ac = $a->distanceFromPoint($c);
+        $bc = $b->distanceFromPoint($c);
+        $ab = $a->distanceFromPoint($b);
+
+        $ac = (float)number_format((float)$ac, 3, '.', '');
+        $bc = (float)number_format((float)$bc, 3, '.', '');
+        $ab = (float)number_format((float)$ab, 3, '.', '');
+
+        if ($canvas) {
+            dump($ac);
+            dump($bc);
+            dump($ab);
+        }
+
+        if (abs($ab - ($ac + $bc)) <= 0.005) {
             return $collisionPoint;
         }
 
@@ -76,8 +94,10 @@ class Line
         return ($this->centre->y - $this->slope * $this->centre->x);
     }
 
-    private function calculateDistance()
+    private function calculateLength()
     {
+        if (is_null($this->points[0]) && is_null($this->points[0])) return 1000000;
+
         return $this->points[0]->distanceFromPoint($this->points[1]);
     }
 }
