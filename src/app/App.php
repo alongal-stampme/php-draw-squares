@@ -14,11 +14,12 @@ class App
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-//        $this->drawAllWords($document, $canvas);
+        $this->drawAllWords($document, $canvas);
+
 
 //        foreach ($document->words as $j => $wordJ) {
 //            $index = $j;
-        $index = 11;
+        $index = 0;
         $word0 = $document->words[$index];
         $word1 = $document->closestWord($word0);
 //        $canvas->draw($word0->vertices);
