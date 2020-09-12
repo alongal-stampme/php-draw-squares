@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Geometry\NullCollision;
 use App\Geometry\Vertex;
 
 class JsonDocument
@@ -68,6 +69,28 @@ class JsonDocument
         fclose($file);
 
         return file_get_contents($fileName);
+    }
+
+    public function closestWord(Word $word)
+    {
+        $distances = collect($this->words)
+            ->map(function ($w) use ($word) {
+                if ($w === $word) return;
+
+                $collision = $word->vertices->collision($w->vertices);
+
+                if (!$collision instanceof NullCollision) {
+                    $collision->length = $collision->distance->length;
+                    return $collision;
+                }
+            })
+            ->filter(function ($collision) {
+                return !is_null($collision);
+            })
+            ->sortBy('distance.length');
+
+//        dd($distances);
+        return $this->words[$distances->keys()->first()];
     }
 
     private function generateWords()
