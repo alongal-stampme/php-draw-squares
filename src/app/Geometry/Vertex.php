@@ -75,7 +75,11 @@ class Vertex
     private function calculateHeight()
     {
         $v = $this->points;
-        return abs($v[0]->y - $v[2]->y);
+        $leftLine = abs($v[0]->y - $v[3]->y);
+        $rightLine = abs($v[1]->y - $v[2]->y);
+        if ($leftLine >= $rightLine) return $leftLine;
+        return $rightLine;
+//        return abs($v[0]->y - $v[2]->y);
     }
 
 

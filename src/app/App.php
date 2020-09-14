@@ -14,29 +14,33 @@ class App
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-        $this->drawAllWords($document, $canvas);
+//        $this->drawAllWords($document, $canvas);
 
 
 //        foreach ($document->words as $j => $wordJ) {
 //            $index = $j;
-        $index = 0;
-        $word0 = $document->words[$index];
-        $word1 = $document->closestWord($word0);
+//        $index = 12;
+//        $word0 = $document->words[$index];
+//        $word1 = $document->closestWord($word0);
 //        $canvas->draw($word0->vertices);
 //        $canvas->draw($word1->vertices, $canvas->colours->purple);
 
 //            $canvas->draw($document->words[$index]->vertices, $canvas->colours->purple);
-            foreach ($document->words as $i => $word) {
-                $collision = $document->words[$index]->vertices->collision(
-                    $document->words[$i]->vertices,
-                    $canvas
-                );
+//            foreach ($document->words as $i => $word) {
+//                $collision = $document->words[$index]->vertices->collision(
+//                    $document->words[$i]->vertices,
+//                    $canvas
+//                );
 //                $canvas->draw($collision);
 //                $canvas->draw($collision->distance, $canvas->colours->purple);
-            }
+//            }
 //        }
 
+        // 1. Sort words by Y axis
+        $words = $this->sortByYAxis($document->words);
+
         $canvas->output();
+
 
 //        $output = $document->writeToFile($array->toArray(), 'output.txt');
 //        echo "<pre>" . $output . "</pre>";
@@ -50,5 +54,15 @@ class App
                 $canvas->colours->yellow
             );
         }
+    }
+
+    private function sortByYAxis(array $words)
+    {
+        $words = collect($words)->map(function($word) {
+            $word->y = $word->vertices->points[0]->y;
+            return $word;
+        })->sortBy('y');
+
+        dd($words);
     }
 }
