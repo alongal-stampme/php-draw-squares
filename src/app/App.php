@@ -5,6 +5,7 @@ namespace App;
 use App\Geometry\Collision;
 use App\Geometry\FullScreenLine;
 use App\Geometry\NullCollision;
+use Tightenco\Collect\Support\Collection;
 
 class App
 {
@@ -38,6 +39,13 @@ class App
 
         // 1. Sort words by Y axis
         $words = $this->sortByYAxis($document->words);
+        $words = $this->wordsDerivatives($words);
+        $lines = $this->findLinesFromWordsDerivatives($words);
+        $lines = $this->sortByXAxis($lines);
+
+        foreach ($lines as $line) {
+            dump(collect($line)->pluck('text'));
+        }
 
         $canvas->output();
 
@@ -58,11 +66,48 @@ class App
 
     private function sortByYAxis(array $words)
     {
-        $words = collect($words)->map(function($word) {
+        return collect($words)->map(function ($word) {
             $word->y = $word->vertices->points[0]->y;
+            $word->x = $word->vertices->points[0]->x;
             return $word;
         })->sortBy('y');
+    }
 
-        dd($words);
+    private function wordsDerivatives(Collection $words)
+    {
+        $previous = null;
+        return $words->map(function ($word, $index) use ($words, &$previous) {
+            if ($words->first() === $word) {
+                $previous = $index;
+                $word->derivative = 0;
+                return $word;
+            }
+            $d = $words[$index]->y - $words[$previous]->y;
+            $previous = $index;
+            $word->derivative = $d;
+            return $word;
+        });
+    }
+
+    private function findLinesFromWordsDerivatives(Collection $words)
+    {
+        $lines = [];
+        $line = 0;
+        $words = $words->flatten()->all();
+        foreach ($words as $index => $word) {
+            $diff = $words[$index]->derivative - $words[$index - 1]->derivative;
+            if ($diff > 10) $line++;
+            $lines[$line][] = $word;
+        }
+        return $lines;
+    }
+
+    private function sortByXAxis(array $lines)
+    {
+        foreach ($lines as $index => $line) {
+            $lines[$index] = collect($line)->sortBy('x')
+                ->flatten()->all();
+        }
+        return $lines;
     }
 }
