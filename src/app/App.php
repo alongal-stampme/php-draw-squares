@@ -11,31 +11,41 @@ class App
 {
     public function run()
     {
-        $image = 'abcdefg';
+        $image = 'IMG_20200901_102427';
+//        $image = 'abcdefg';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
 //        $this->drawAllWords($document, $canvas);
+        $word = $document->words[81];
+        $canvas->draw($word->vertices, $canvas->colours->yellow);
+        $canvas->draw($word->vertices->median, $canvas->colours->purple);
+
+        $word = $document->words[82];
+        $canvas->draw($word->vertices, $canvas->colours->yellow);
+        $canvas->draw($word->vertices->median, $canvas->colours->purple);
+//        dd($word);
 
 
-//        foreach ($document->words as $j => $wordJ) {
-//            $index = $j;
-//        $index = 12;
-//        $word0 = $document->words[$index];
-//        $word1 = $document->closestWord($word0);
-//        $canvas->draw($word0->vertices);
-//        $canvas->draw($word1->vertices, $canvas->colours->purple);
+        foreach ($document->words as $j => $wordJ) {
+            $index = $j;
+            $index = 81;
+            $word0 = $document->words[$index];
+            $word1 = $document->closestWord($word0);
+            $canvas->draw($word0->vertices);
+            $canvas->draw($word1->vertices, $canvas->colours->purple);
 
-//            $canvas->draw($document->words[$index]->vertices, $canvas->colours->purple);
-//            foreach ($document->words as $i => $word) {
-//                $collision = $document->words[$index]->vertices->collision(
-//                    $document->words[$i]->vertices,
-//                    $canvas
-//                );
-//                $canvas->draw($collision);
-//                $canvas->draw($collision->distance, $canvas->colours->purple);
-//            }
-//        }
+            $canvas->draw($document->words[$index]->vertices, $canvas->colours->purple);
+            foreach ($document->words as $i => $word) {
+                $collision = $document->words[$index]->vertices->collision(
+                    $document->words[$i]->vertices,
+                    $canvas
+                );
+                $canvas->draw($collision);
+                $canvas->draw($collision->distance, $canvas->colours->purple);
+            }
+        }
+
 
         // 1. Sort words by Y axis
         $words = $this->sortByYAxis($document->words);
@@ -44,7 +54,7 @@ class App
         $lines = $this->sortByXAxis($lines);
 
         foreach ($lines as $line) {
-            dump(collect($line)->pluck('text'));
+//            dump(collect($line)->pluck('text'));
         }
 
         $canvas->output();
@@ -67,7 +77,13 @@ class App
     private function sortByYAxis(array $words)
     {
         return collect($words)->map(function ($word) {
-            $word->y = $word->vertices->points[0]->y;
+            if ($word->vertices->median->slope >= 0) {
+                $word->y = $word->vertices->points[0]->y;
+            }
+            if ($word->vertices->median->slope < 0) {
+                $word->y = $word->vertices->points[1]->y;
+            }
+
             $word->x = $word->vertices->points[0]->x;
             return $word;
         })->sortBy('y');
@@ -91,12 +107,16 @@ class App
 
     private function findLinesFromWordsDerivatives(Collection $words)
     {
+        $derivativeDiff = 7;
         $lines = [];
         $line = 0;
         $words = $words->flatten()->all();
         foreach ($words as $index => $word) {
             $diff = $words[$index]->derivative - $words[$index - 1]->derivative;
-            if ($diff > 10) $line++;
+
+//            dump($word->text, $diff, '-----');
+
+            if ($diff > $derivativeDiff) $line++;
             $lines[$line][] = $word;
         }
         return $lines;
