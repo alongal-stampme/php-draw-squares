@@ -30,7 +30,7 @@ class FullScreenLine extends Line
 
         if ($canvas) {
 //            $canvas->draw($line0, $canvas->colours->purple);
-            $canvas->draw($line1, $canvas->colours->purple);
+//            $canvas->draw($line1, $canvas->colours->purple);
 //            $canvas->draw($line2, $canvas->colours->purple);
 //            $canvas->draw($line3, $canvas->colours->purple);
         }
@@ -38,7 +38,7 @@ class FullScreenLine extends Line
         $c0 = $this->collisionWithLine($line0);
         $c1 = $this->collisionWithLine($line1);
         $c2 = $this->collisionWithLine($line2);
-        $c3 = $this->collisionWithLine($line3);
+        $c3 = $this->collisionWithLine($line3, $canvas);
 
         $collisionPoints = [];
         if (!$c0 instanceof NullPoint) $collisionPoints[] = $c0;

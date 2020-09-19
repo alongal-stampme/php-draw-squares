@@ -40,9 +40,18 @@ class Line
             $x = $line->points[0]->x;
             $y = $this->b;
         }
+        if ($s2 == INF || $s2 == -INF) {
+            $x = $line->points[0]->x;
+            $y = $this->slope * $x + $this->b;
+        }
 
         $collisionPoint = new Point($x, $y);
         if ($canvas) {
+//            dump($line);
+//            dump($this);
+//            dd($x, $y);
+//            dd($s1, $s2, $b1, $b2);
+//            dd($collisionPoint);
             $canvas->draw($collisionPoint, $canvas->colours->purple);
         }
 
@@ -72,9 +81,10 @@ class Line
 //            dump($ac);
 //            dump($bc);
 //            dump($ab);
+//            dump(abs($ab - ($ac + $bc)));
         }
 
-        if (abs($ab - ($ac + $bc)) <= 0.005) {
+        if (abs($ab - ($ac + $bc)) <= 0.03) {
             return $collisionPoint;
         }
 

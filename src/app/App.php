@@ -11,8 +11,8 @@ class App
 {
     public function run()
     {
-//        $image = 'IMG_20200901_102427';
-        $image = 'abcdefg';
+        $image = 'IMG_20200901_102427';
+//        $image = 'abcdefg';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
@@ -27,7 +27,7 @@ class App
 //        dd($word);
 
         $word11 = $document->words[0];
-        $word10 = $document->words[1];
+        $word10 = $document->words[10];
         $canvas->draw($word11->vertices);
         $canvas->draw($word10->vertices, $canvas->colours->green);
 
@@ -36,23 +36,24 @@ class App
         );
         $canvas->draw($collision, $canvas->colours->purple);
         /**/
-//        foreach ($document->words as $j => $wordJ) {
-//            $index = $j;
+        foreach ($document->words as $j => $wordJ) {
+            $index = $j;
 //            $index = 11;
-//            $word0 = $document->words[$index];
-//            $word1 = $document->closestWord($word0);
+            $word0 = $document->words[$index];
+            $word1 = $document->closestWord($word0);
 //            $canvas->draw($word0->vertices);
 //            $canvas->draw($word1->vertices, $canvas->colours->green);
 
 //            $canvas->draw($document->words[$index]->vertices, $canvas->colours->purple);
-//            foreach ($document->words as $i => $word) {
-//                $collision = $word0->vertices->collision(
-//                    $word1->vertices
-//                );
-//                $canvas->draw($collision, $canvas->colours->purple);
-//                $canvas->draw($collision->distance, $canvas->colours->purple);
-//            }
-//        }
+            foreach ($document->words as $i => $word) {
+                if (is_null($word1)) continue;
+                $collision = $word0->vertices->collision(
+                    $word1->vertices
+                );
+                $canvas->draw($collision, $canvas->colours->purple);
+                $canvas->draw($collision->distance, $canvas->colours->purple);
+            }
+        }
         /**/
 
         // 1. Sort words by Y axis
