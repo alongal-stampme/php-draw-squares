@@ -38,8 +38,8 @@ class Canvas
                 $this->drawVertex($shape, $this->canvas, $colour);
                 break;
             case Collision::class:
-                $this->drawVertex($shape->originVertex, $this->canvas, $colour);
-                $this->drawVertex($shape->destinationVertex, $this->canvas, $colour);
+//                $this->drawVertex($shape->originVertex, $this->canvas, $colour);
+//                $this->drawVertex($shape->destinationVertex, $this->canvas, $colour);
                 $this->drawLine($shape->fullScreenLine, $this->canvas, $colour);
                 foreach ($shape->collisionPoints as $point) {
                     $this->drawPoint($point, $this->canvas, $colour);
@@ -58,8 +58,8 @@ class Canvas
             $canvas,
             $point->x,
             $point->y,
-            15,
-            15,
+            6,
+            6,
             $colour
         );
     }

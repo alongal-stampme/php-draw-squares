@@ -36,6 +36,11 @@ class Line
         $x = ($b2 - $b1) / ($s1 - $s2);
         $y = ($s1 * $x) + $b1;
 
+        if ($s1 == 0) {
+            $x = $line->points[0]->x;
+            $y = $this->b;
+        }
+
         $collisionPoint = new Point($x, $y);
         if ($canvas) {
             $canvas->draw($collisionPoint, $canvas->colours->purple);
@@ -64,9 +69,9 @@ class Line
         $ab = (float)number_format((float)$ab, 3, '.', '');
 
         if ($canvas) {
-            dump($ac);
-            dump($bc);
-            dump($ab);
+//            dump($ac);
+//            dump($bc);
+//            dump($ab);
         }
 
         if (abs($ab - ($ac + $bc)) <= 0.005) {

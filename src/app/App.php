@@ -11,41 +11,49 @@ class App
 {
     public function run()
     {
-        $image = 'IMG_20200901_102427';
-//        $image = 'abcdefg';
+//        $image = 'IMG_20200901_102427';
+        $image = 'abcdefg';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
 //        $this->drawAllWords($document, $canvas);
-        $word = $document->words[81];
-        $canvas->draw($word->vertices, $canvas->colours->yellow);
-        $canvas->draw($word->vertices->median, $canvas->colours->purple);
+//        $word = $document->words[81];
+//        $canvas->draw($word->vertices, $canvas->colours->yellow);
+//        $canvas->draw($word->vertices->median, $canvas->colours->purple);
 
-        $word = $document->words[82];
-        $canvas->draw($word->vertices, $canvas->colours->yellow);
-        $canvas->draw($word->vertices->median, $canvas->colours->purple);
+//        $word = $document->words[8];
+//        $canvas->draw($word->vertices, $canvas->colours->yellow);
+//        $canvas->draw($word->vertices->median, $canvas->colours->purple);
 //        dd($word);
 
+        $word11 = $document->words[0];
+        $word10 = $document->words[1];
+        $canvas->draw($word11->vertices);
+        $canvas->draw($word10->vertices, $canvas->colours->green);
 
-        foreach ($document->words as $j => $wordJ) {
-            $index = $j;
-            $index = 81;
-            $word0 = $document->words[$index];
-            $word1 = $document->closestWord($word0);
-            $canvas->draw($word0->vertices);
-            $canvas->draw($word1->vertices, $canvas->colours->purple);
+        $collision = $word11->vertices->collision(
+            $word10->vertices
+        );
+        $canvas->draw($collision, $canvas->colours->purple);
+        /**/
+//        foreach ($document->words as $j => $wordJ) {
+//            $index = $j;
+//            $index = 11;
+//            $word0 = $document->words[$index];
+//            $word1 = $document->closestWord($word0);
+//            $canvas->draw($word0->vertices);
+//            $canvas->draw($word1->vertices, $canvas->colours->green);
 
-            $canvas->draw($document->words[$index]->vertices, $canvas->colours->purple);
-            foreach ($document->words as $i => $word) {
-                $collision = $document->words[$index]->vertices->collision(
-                    $document->words[$i]->vertices,
-                    $canvas
-                );
-                $canvas->draw($collision);
-                $canvas->draw($collision->distance, $canvas->colours->purple);
-            }
-        }
-
+//            $canvas->draw($document->words[$index]->vertices, $canvas->colours->purple);
+//            foreach ($document->words as $i => $word) {
+//                $collision = $word0->vertices->collision(
+//                    $word1->vertices
+//                );
+//                $canvas->draw($collision, $canvas->colours->purple);
+//                $canvas->draw($collision->distance, $canvas->colours->purple);
+//            }
+//        }
+        /**/
 
         // 1. Sort words by Y axis
         $words = $this->sortByYAxis($document->words);
