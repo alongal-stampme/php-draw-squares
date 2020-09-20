@@ -11,14 +11,14 @@ class App
 {
     public function run()
     {
-        $image = 'IMG_20200901_102427';
-//        $image = 'abcdefg';
+//        $image = 'IMG_20200901_102427';
+        $image = 'abcdefg';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
         // 2, 4, 5
-        $word2 = $document->text->wordStream[37];
-        $word4 = $document->text->wordStream[37];
+        $word2 = $document->text->wordStream[2];
+        $word4 = $document->text->wordStream[4];
         $word5 = $document->text->wordStream[5];
 
         $canvas->draw($word2->vertices);
@@ -36,6 +36,8 @@ class App
 
         $canvas->draw($line2, $canvas->colours->purple);
         $canvas->draw($line4, $canvas->colours->purple);
+
+        $collisionTable = CollisionTable::makeFor($word2);
 
 //        $collision = $line->collisionWithBox($word4FirstSymbol->vertices);
 //        dd($collision);
