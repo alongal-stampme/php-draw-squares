@@ -16,59 +16,33 @@ class App
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-//        $this->drawAllWords($document, $canvas);
-//        $word = $document->words[81];
-//        $canvas->draw($word->vertices, $canvas->colours->yellow);
-//        $canvas->draw($word->vertices->median, $canvas->colours->purple);
+        // 2, 4, 5
+        $word2 = $document->text->wordStream[37];
+        $word4 = $document->text->wordStream[37];
+        $word5 = $document->text->wordStream[5];
 
-//        $word = $document->words[8];
-//        $canvas->draw($word->vertices, $canvas->colours->yellow);
-//        $canvas->draw($word->vertices->median, $canvas->colours->purple);
-//        dd($word);
+        $canvas->draw($word2->vertices);
+        $canvas->draw($word4->vertices);
+        $canvas->draw($word5->vertices);
 
-        $word11 = $document->words[0];
-        $word10 = $document->words[10];
-        $canvas->draw($word11->vertices);
-        $canvas->draw($word10->vertices, $canvas->colours->green);
+        $word2LastSymbol = collect(collect($word2->words)->last()->symbols)->last();
+        $word4FirstSymbol = collect(collect($word4->words)->first()->symbols)->first();
 
-        $collision = $word11->vertices->collision(
-            $word10->vertices
-        );
-        $canvas->draw($collision, $canvas->colours->purple);
-        /**/
-        foreach ($document->words as $j => $wordJ) {
-            $index = $j;
-//            $index = 11;
-            $word0 = $document->words[$index];
-            $word1 = $document->closestWord($word0);
-//            $canvas->draw($word0->vertices);
-//            $canvas->draw($word1->vertices, $canvas->colours->green);
+        $canvas->draw($word2LastSymbol->vertices, $canvas->colours->green);
+        $canvas->draw($word4FirstSymbol->vertices, $canvas->colours->green);
 
-//            $canvas->draw($document->words[$index]->vertices, $canvas->colours->purple);
-            foreach ($document->words as $i => $word) {
-                if (is_null($word1)) continue;
-                $collision = $word0->vertices->collision(
-                    $word1->vertices
-                );
-                $canvas->draw($collision, $canvas->colours->purple);
-                $canvas->draw($collision->distance, $canvas->colours->purple);
-            }
-        }
-        /**/
+        $line2 = new FullScreenLine($word2LastSymbol->vertices->median);
+        $line4 = new FullScreenLine($word4FirstSymbol->vertices->median);
 
-        // 1. Sort words by Y axis
-        $words = $this->sortByYAxis($document->words);
-        $words = $this->wordsDerivatives($words);
-        $lines = $this->findLinesFromWordsDerivatives($words);
-        $lines = $this->sortByXAxis($lines);
+        $canvas->draw($line2, $canvas->colours->purple);
+        $canvas->draw($line4, $canvas->colours->purple);
 
-        foreach ($lines as $line) {
-//            dump(collect($line)->pluck('text'));
-        }
+//        $collision = $line->collisionWithBox($word4FirstSymbol->vertices);
+//        dd($collision);
+//        $canvas->draw($collision, $canvas->colours->purple);
+//        dd(collect($word2->words)->last());
 
         $canvas->output();
-
-
 //        $output = $document->writeToFile($array->toArray(), 'output.txt');
 //        echo "<pre>" . $output . "</pre>";
     }
