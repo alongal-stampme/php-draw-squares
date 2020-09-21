@@ -51,6 +51,13 @@ class CollisionTable
 
         return collect($d->text->wordStream)->map(function ($word) use ($w) {
             if ($word === $w) return false;
+
+            if ($w->vertices->centreLeft->x > $word->vertices->centreLeft->x) {
+                return $w->getFirstSymbol()->vertices->collision(
+                    $word->getLastSymbol()->vertices
+                );
+            }
+
             return $w->getLastSymbol()->vertices->collision(
                 $word->getFirstSymbol()->vertices
             );

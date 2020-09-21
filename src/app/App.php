@@ -11,22 +11,22 @@ class App
 {
     public function run()
     {
-        $image = 'IMG_20200901_102427';
+//        $image = 'IMG_20200901_102427';
+        $image = '4pkg2q5hwo81mv6l';
 //        $image = 'abcdefg';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
         // 2, 4, 5
-        $word = $document->text->wordStream[25];
-
+        $word = $document->text->wordStream[54];
         $canvas->draw($word->vertices);
+        $collisionTable = CollisionTable::from($document)->for($word, $canvas);
+        foreach ($collisionTable as $word) {
+            $canvas->draw($word->collision);
+        }
 
-//        $line2 = new FullScreenLine($word2LastSymbol->vertices->median);
-//        $line4 = new FullScreenLine($word4FirstSymbol->vertices->median);
-
-//        $canvas->draw($line2, $canvas->colours->purple);
-//        $canvas->draw($line4, $canvas->colours->purple);
-
+        $word = $document->text->wordStream[41];
+        $canvas->draw($word->vertices);
         $collisionTable = CollisionTable::from($document)->for($word, $canvas);
         foreach ($collisionTable as $word) {
             $canvas->draw($word->collision);
