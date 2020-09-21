@@ -11,33 +11,26 @@ class App
 {
     public function run()
     {
-//        $image = 'IMG_20200901_102427';
-        $image = 'abcdefg';
+        $image = 'IMG_20200901_102427';
+//        $image = 'abcdefg';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
         // 2, 4, 5
-        $word2 = $document->text->wordStream[2];
-        $word4 = $document->text->wordStream[4];
-        $word5 = $document->text->wordStream[5];
+        $word = $document->text->wordStream[25];
 
-        $canvas->draw($word2->vertices);
-        $canvas->draw($word4->vertices);
-        $canvas->draw($word5->vertices);
+        $canvas->draw($word->vertices);
 
-        $word2LastSymbol = collect(collect($word2->words)->last()->symbols)->last();
-        $word4FirstSymbol = collect(collect($word4->words)->first()->symbols)->first();
+//        $line2 = new FullScreenLine($word2LastSymbol->vertices->median);
+//        $line4 = new FullScreenLine($word4FirstSymbol->vertices->median);
 
-        $canvas->draw($word2LastSymbol->vertices, $canvas->colours->green);
-        $canvas->draw($word4FirstSymbol->vertices, $canvas->colours->green);
+//        $canvas->draw($line2, $canvas->colours->purple);
+//        $canvas->draw($line4, $canvas->colours->purple);
 
-        $line2 = new FullScreenLine($word2LastSymbol->vertices->median);
-        $line4 = new FullScreenLine($word4FirstSymbol->vertices->median);
-
-        $canvas->draw($line2, $canvas->colours->purple);
-        $canvas->draw($line4, $canvas->colours->purple);
-
-        $collisionTable = CollisionTable::makeFor($word2);
+        $collisionTable = CollisionTable::from($document)->for($word, $canvas);
+        foreach ($collisionTable as $word) {
+            $canvas->draw($word->collision);
+        }
 
 //        $collision = $line->collisionWithBox($word4FirstSymbol->vertices);
 //        dd($collision);

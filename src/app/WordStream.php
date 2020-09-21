@@ -34,6 +34,16 @@ class WordStream
         return strlen($this->text);
     }
 
+    public function getLastSymbol()
+    {
+        return collect(collect($this->words)->last()->symbols)->last();
+    }
+
+    public function getFirstSymbol()
+    {
+        return collect(collect($this->words)->first()->symbols)->first();
+    }
+
     private function extractText()
     {
         $text = '';
