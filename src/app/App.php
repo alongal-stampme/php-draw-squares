@@ -18,19 +18,20 @@ class App
         $canvas = new Canvas($image);
 
         // 2, 4, 5
-        $word = $document->text->wordStream[25];
+        $word = $document->text->wordStream[5];
         $canvas->draw($word->vertices);
-        $collisionTable = CollisionTable::from($document)->for($word, $canvas);
+        $collisionTable = CollisionTable::with($document)->for($word);
+//        dd($word->text, $collisionTable->first());
         foreach ($collisionTable as $word) {
             $canvas->draw($word->collision);
         }
 
-        $word = $document->text->wordStream[28];
-        $canvas->draw($word->vertices);
-        $collisionTable = CollisionTable::from($document)->for($word, $canvas);
-        foreach ($collisionTable as $word) {
-            $canvas->draw($word->collision);
-        }
+//        $word = $document->text->wordStream[25];
+//        $canvas->draw($word->vertices);
+//        $collisionTable = CollisionTable::with($document)->for($word, $canvas);
+//        foreach ($collisionTable as $word) {
+////            $canvas->draw($word->collision);
+//        }
 
 //        $collision = $line->collisionWithBox($word4FirstSymbol->vertices);
 //        dd($collision);
