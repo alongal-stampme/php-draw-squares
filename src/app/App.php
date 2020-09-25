@@ -11,32 +11,29 @@ class App
 {
     public function run()
     {
+//        $image = 'IMG_20200711_145840';
         $image = 'IMG_20200901_102427';
 //        $image = '4pkg2q5hwo81mv6l';
 //        $image = 'abcdefg';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-        // 2, 4, 5
-        $word = $document->text->wordStream[5];
-        $canvas->draw($word->vertices);
-        $collisionTable = CollisionTable::with($document)->for($word);
-//        dd($word->text, $collisionTable->first());
-        foreach ($collisionTable as $word) {
-            $canvas->draw($word->collision);
+        $forSureSameLine = [];
+        $notSureSameLine = [];
+        foreach ($document->text->wordStream as $word) {
+            $canvas->draw($word->vertices);
+            $collisionTable = CollisionTable::with($document)->for($word);
+//            dump($word, $collisionTable);
+
+            if ($collisionTable->isEmpty()) $forSureSameLine[] = [$word->text];
+            if ( $collisionTable->first()->isReverseCollision) {
+                $forSureSameLine[] = [$word->text, $collisionTable->first()->text];
+                foreach ($collisionTable as $w) {
+                    $canvas->draw($w->collision);
+                }
+            }
         }
-
-//        $word = $document->text->wordStream[25];
-//        $canvas->draw($word->vertices);
-//        $collisionTable = CollisionTable::with($document)->for($word, $canvas);
-//        foreach ($collisionTable as $word) {
-////            $canvas->draw($word->collision);
-//        }
-
-//        $collision = $line->collisionWithBox($word4FirstSymbol->vertices);
-//        dd($collision);
-//        $canvas->draw($collision, $canvas->colours->purple);
-//        dd(collect($word2->words)->last());
+        dd($forSureSameLine);
 
         $canvas->output();
 //        $output = $document->writeToFile($array->toArray(), 'output.txt');
