@@ -93,6 +93,39 @@ class JsonDocument
         return $this->words[$distances->keys()->first()];
     }
 
+    public function organaiseTextInLines($canvas = null)
+    {
+        $forSureSameLine = [];
+        $notSureSameLine = [];
+        foreach ($this->text->wordStream as $word) {
+            if ($canvas) {
+                $canvas->draw($word->vertices);
+            }
+
+            $collisionTable = CollisionTable::with($this)->for($word);
+
+            if ($collisionTable->isEmpty()) {
+                $forSureSameLine[] = [$word->text];
+                continue;
+            }
+
+            if ($collisionTable->first()->isReverseCollision) {
+                if ($word->vertices->centreLeft >= $collisionTable->first()->vertices->centreLeft) continue;
+
+                $forSureSameLine[] = [$word->text, $collisionTable->first()->text];
+                if ($canvas) {
+                    foreach ($collisionTable as $w) {
+                        $canvas->draw($w->collision);
+                    }
+                }
+
+                continue;
+            }
+
+            dump($word->text, $collisionTable->first());
+        }
+    }
+
     private function generateWords()
     {
         $array = [];

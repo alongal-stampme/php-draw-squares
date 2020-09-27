@@ -18,22 +18,9 @@ class App
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-        $forSureSameLine = [];
-        $notSureSameLine = [];
-        foreach ($document->text->wordStream as $word) {
-            $canvas->draw($word->vertices);
-            $collisionTable = CollisionTable::with($document)->for($word);
-//            dump($word, $collisionTable);
+        $document->organaiseTextInLines($canvas);
 
-            if ($collisionTable->isEmpty()) $forSureSameLine[] = [$word->text];
-            if ( $collisionTable->first()->isReverseCollision) {
-                $forSureSameLine[] = [$word->text, $collisionTable->first()->text];
-                foreach ($collisionTable as $w) {
-                    $canvas->draw($w->collision);
-                }
-            }
-        }
-        dd($forSureSameLine);
+//        dd($forSureSameLine);
 
         $canvas->output();
 //        $output = $document->writeToFile($array->toArray(), 'output.txt');
