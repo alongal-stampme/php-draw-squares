@@ -122,7 +122,7 @@ class JsonDocument
                 continue;
             }
 
-//            dump($word->text, $collisionTable->first());
+            dump($word->text, $collisionTable->first());
         }
     }
 
