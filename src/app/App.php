@@ -18,6 +18,8 @@ class App
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
+//        $canvas->draw($document->text->wordStream[10]->vertices);
+
         $document->organaiseTextInLines($canvas);
 
 //        dd($forSureSameLine);

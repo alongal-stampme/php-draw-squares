@@ -2,7 +2,10 @@
 
 namespace App;
 
+use App\Geometry\FullScreenLine;
+use App\Geometry\Line;
 use App\Geometry\NullCollision;
+use App\Geometry\Point;
 use Tightenco\Collect\Support\Collection;
 
 class CollisionTable
@@ -36,6 +39,23 @@ class CollisionTable
             });
 
         return $this->collisions;
+    }
+
+    public function doubleCheck(WordStream $word, WordStream $collisionWith, $canvas = null)
+    {
+        if ($canvas) {
+//            $canvas->draw($word->vertices->centreLeft);
+//            $canvas->draw($collisionWith->vertices->centreLeft, $canvas->colours->purple);
+        }
+        if ($word->vertices->centreLeft > $collisionWith->vertices->centreLeft) {
+            if ($word->vertices->centreRight < $collisionWith->vertices->centreRight) {
+                return false;
+            }
+            $canvas->draw($word->vertices->centreRight);
+            $canvas->draw($collisionWith->vertices->centreRight, $canvas->colours->purple);
+        }
+
+        return true;
     }
 
     protected function __construct(JsonDocument $document)

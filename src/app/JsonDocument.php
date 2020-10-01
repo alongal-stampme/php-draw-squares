@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Geometry\Collision;
 use App\Geometry\NullCollision;
 use App\Geometry\Vertex;
 
@@ -97,36 +98,48 @@ class JsonDocument
     {
         $forSureSameLine = [];
         $notSureSameLine = [];
-        foreach ($this->text->wordStream as $word) {
-            if ($canvas) {
-                $canvas->draw($word->vertices);
-            }
-
+        foreach ($this->text->wordStream as $index => $word) {
             $collisionTable = CollisionTable::with($this)->for($word);
 
             if ($collisionTable->isEmpty()) {
-                $forSureSameLine[] = [$word->text];
+                $forSureSameLine[] = [$word];
                 continue;
             }
 
             if ($collisionTable->first()->isReverseCollision) {
                 if ($word->vertices->centreLeft >= $collisionTable->first()->vertices->centreLeft) continue;
 
-                $forSureSameLine[] = [$word->text, $collisionTable->first()->text];
-                if ($canvas) {
-                    foreach ($collisionTable as $w) {
-                        $canvas->draw($w->collision);
-                    }
-                }
-
+                $forSureSameLine[] = [$word, $collisionTable->first()];
                 continue;
             }
 
-            dump($word->text, $collisionTable->first());
+            $word->collisionWith = $collisionTable->first();
+            $notSureSameLine[] = [$word];
         }
+
+        $sameLine = collect($notSureSameLine)
+            ->filter(function ($notSure, $key) {
+                // 1. take out words that their collisionWith attribute has isReverseCollision
+                if ($notSure[0]->collisionWith->isReverseCollision) return false;
+                return true;
+            })
+            ->values();
+
+        foreach ($sameLine as $word) {
+            $isCollision = CollisionTable::with($this)->doubleCheck($word[0], $word[0]->collisionWith, $canvas);
+            if (!$isCollision) {
+                $forSureSameLine[] = [$word[0]];
+                $forSureSameLine[] = [$word[0]->collisionWith];
+                continue;
+            }
+            $forSureSameLine[] = [$word[0], $word[0]->collisionWith];
+        }
+
+        dd($forSureSameLine);
     }
 
-    private function generateWords()
+    private
+    function generateWords()
     {
         $array = [];
 
@@ -142,7 +155,8 @@ class JsonDocument
         return $array;
     }
 
-    private function generateText()
+    private
+    function generateText()
     {
         return (new Text)->fromWords($this->words);
     }
