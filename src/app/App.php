@@ -18,11 +18,20 @@ class App
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-//        $canvas->draw($document->text->wordStream[10]->vertices);
+        // 12, 14, 15
 
-        $document->organaiseTextInLines($canvas);
+        $lines = $document->organaiseTextInLines();
 
-//        dd($forSureSameLine);
+        $lineText = '';
+        foreach ($lines as $line) {
+            $l = '';
+            foreach ($line as $word) {
+                $l .= $word->text . "\t\t";
+            }
+            $lineText .= $l . "\n";
+        }
+        dd($lineText);
+//        dd('');
 
         $canvas->output();
 //        $output = $document->writeToFile($array->toArray(), 'output.txt');

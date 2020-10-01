@@ -84,7 +84,7 @@ class Line
 //            dump(abs($ab - ($ac + $bc)));
         }
 
-        if (abs($ab - ($ac + $bc)) <= 0.03) {
+        if (abs($ab - ($ac + $bc)) <= 0.09) {
             return $collisionPoint;
         }
 

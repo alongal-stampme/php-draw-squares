@@ -2,10 +2,7 @@
 
 namespace App;
 
-use App\Geometry\FullScreenLine;
-use App\Geometry\Line;
 use App\Geometry\NullCollision;
-use App\Geometry\Point;
 use Tightenco\Collect\Support\Collection;
 
 class CollisionTable
@@ -43,16 +40,14 @@ class CollisionTable
 
     public function doubleCheck(WordStream $word, WordStream $collisionWith, $canvas = null)
     {
-        if ($canvas) {
-//            $canvas->draw($word->vertices->centreLeft);
-//            $canvas->draw($collisionWith->vertices->centreLeft, $canvas->colours->purple);
-        }
         if ($word->vertices->centreLeft > $collisionWith->vertices->centreLeft) {
             if ($word->vertices->centreRight < $collisionWith->vertices->centreRight) {
                 return false;
             }
-            $canvas->draw($word->vertices->centreRight);
-            $canvas->draw($collisionWith->vertices->centreRight, $canvas->colours->purple);
+            if ($canvas) {
+                $canvas->draw($word->vertices->centreRight);
+                $canvas->draw($collisionWith->vertices->centreRight, $canvas->colours->purple);
+            }
         }
 
         return true;
@@ -75,19 +70,38 @@ class CollisionTable
             $c->draw($w->getFirstSymbol()->vertices, $c->colours->purple);
         }
 
-        return collect($d->text->wordStream)->map(function ($word) use ($w, $c) {
+        $collection = collect($d->text->wordStream)->map(function ($word) use ($w, $c) {
             if ($word === $w) return false;
 
-            if ($w->vertices->centreLeft->x > $word->vertices->centreLeft->x) {
-                return $w->getFirstSymbol()->vertices->collision(
-                    $word->getLastSymbol()->vertices, $c
-                );
+            if ($c) {
+                if ($word->text != '1/09/2020') return false;
             }
 
-            return $w->getLastSymbol()->vertices->collision(
-                $word->getFirstSymbol()->vertices, $c
+            if ($w->vertices->centreLeft->x > $word->vertices->centreLeft->x) {
+                $collision = $w->getFirstSymbol()->vertices->collision(
+                    $word->getLastSymbol()->vertices
+                    , $c
+                );
+                if ($c) {
+                    $c->draw($collision);
+                }
+                return $collision;
+            }
+
+            $collision = $w->getLastSymbol()->vertices->collision(
+                $word->getFirstSymbol()->vertices
+                , $c
             );
-        })->filter(function ($word) {
+            if ($c) {
+//                $c->draw($word->getFirstSymbol()->vertices);
+                $c->draw($collision);
+            }
+
+            return $collision;
+        });
+
+        return $collection->filter(function ($word) {
+            if (!$word) return false;
             if ($word instanceof NullCollision) return false;
             return $word;
         });

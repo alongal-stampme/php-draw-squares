@@ -56,7 +56,7 @@ class Vertex
         if ($canvas) {
 //            $canvas->draw($this);
 //            $canvas->draw($vertex, $canvas->colours->green);
-//            $canvas->draw($line, $canvas->colours->purple);
+            $canvas->draw($line, $canvas->colours->purple);
         }
 
         $collision = $line->collisionWithBox($vertex, $canvas);

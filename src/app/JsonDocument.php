@@ -99,13 +99,21 @@ class JsonDocument
         $forSureSameLine = [];
         $notSureSameLine = [];
         foreach ($this->text->wordStream as $index => $word) {
-            $collisionTable = CollisionTable::with($this)->for($word);
+            $collisionTable = collect();
+//            if ($index == 12) {
+            $collisionTable = CollisionTable::with($this)->for($word, $canvas);
+//            }
 
+            // If there is no collision to the word then for
+            // sure it is the same line as itself
             if ($collisionTable->isEmpty()) {
                 $forSureSameLine[] = [$word];
                 continue;
             }
 
+            // If the word has a reverse collision (ie: the word that
+            // it collide with also collide back, then it is
+            // for sure the same line
             if ($collisionTable->first()->isReverseCollision) {
                 if ($word->vertices->centreLeft >= $collisionTable->first()->vertices->centreLeft) continue;
 
@@ -113,18 +121,22 @@ class JsonDocument
                 continue;
             }
 
+            // For everything else, we put in a separate array
+            // for further investigation
             $word->collisionWith = $collisionTable->first();
             $notSureSameLine[] = [$word];
         }
 
+        // Filter out all the words that their collision appears
+        // for sure in a separate line somewhere else
         $sameLine = collect($notSureSameLine)
             ->filter(function ($notSure, $key) {
-                // 1. take out words that their collisionWith attribute has isReverseCollision
                 if ($notSure[0]->collisionWith->isReverseCollision) return false;
                 return true;
             })
             ->values();
 
+        // Double check all the words that we not sure about
         foreach ($sameLine as $word) {
             $isCollision = CollisionTable::with($this)->doubleCheck($word[0], $word[0]->collisionWith, $canvas);
             if (!$isCollision) {
@@ -135,11 +147,22 @@ class JsonDocument
             $forSureSameLine[] = [$word[0], $word[0]->collisionWith];
         }
 
-        dd($forSureSameLine);
+        // Sort the new lines by their X axis
+        $forSureSameLine = collect($forSureSameLine)->map(function ($line) {
+            return collect($line)->sortBy(function ($word) {
+                return $word->vertices->centreLeft->x;
+            });
+        })
+            ->sortBy(function ($word) {
+                return $word->first()->vertices->centreLeft->y;
+            });
+
+        // Sort by the Y axis
+
+        return $forSureSameLine;
     }
 
-    private
-    function generateWords()
+    private function generateWords()
     {
         $array = [];
 
@@ -155,8 +178,7 @@ class JsonDocument
         return $array;
     }
 
-    private
-    function generateText()
+    private function generateText()
     {
         return (new Text)->fromWords($this->words);
     }
