@@ -48,27 +48,21 @@ class JsonDocument
         return $this->text->characterCount();
     }
 
-    public function writeToFile(array $data, $fileName)
+    public function writeToFile(Collection $lines, $fileName)
     {
-        // Init multi dimensional array
-        $text = [];
-        for ($i = 0; $i < 100; $i++) {
-            for ($j = 0; $j < 100; $j++) {
-                $text[$i][$j] = ' ';
+        $lineText = '';
+        foreach ($lines as $line) {
+            $l = '';
+            foreach ($line as $word) {
+                $l .= $word->text . "\t\t";
             }
+            $lineText .= $l . "\n";
         }
 
-        // Copy text into array
-        foreach ($data as $line) {
-            for ($i = 0; $i < strlen($line['text']); $i++) {
-                $y = (int)$line['y'];
-                $x = (int)$line['x'];
-                $text[$y][$x + $i] = $line['text'][$i];
-            }
-        }
+        $text = $lineText;
         // Write to file
         $file = fopen("output.txt", "w+");
-        foreach ($text as $line) fwrite($file, implode('', $line) . PHP_EOL);
+        fwrite($file,  $text);
         fclose($file);
 
         return file_get_contents($fileName);
@@ -101,7 +95,7 @@ class JsonDocument
         $forSureSameLine = [];
         $notSureSameLine = [];
         foreach ($this->text->wordStream as $index => $word) {
-//            if ($index !== 1) continue;
+//            if ($index !== 4) continue;
 
             $collisionTable = CollisionTable::with($this)->for($word, $canvas);
             $collisionTable = $this->filterOnlyTheClosestCollision($collisionTable);

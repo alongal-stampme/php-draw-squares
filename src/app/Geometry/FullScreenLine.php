@@ -29,9 +29,9 @@ class FullScreenLine extends Line
         $line3 = new Line($vertex->points[3], $vertex->points[0]);
 
         if ($canvas) {
-            $canvas->draw($line0, $canvas->colours->purple);
-            $canvas->draw($line1, $canvas->colours->purple);
-            $canvas->draw($line2, $canvas->colours->purple);
+//            $canvas->draw($line0, $canvas->colours->purple);
+//            $canvas->draw($line1, $canvas->colours->purple);
+//            $canvas->draw($line2, $canvas->colours->purple);
             $canvas->draw($line3, $canvas->colours->purple);
         }
 

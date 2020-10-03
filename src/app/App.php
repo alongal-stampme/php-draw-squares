@@ -2,9 +2,7 @@
 
 namespace App;
 
-use App\Geometry\Collision;
 use App\Geometry\FullScreenLine;
-use App\Geometry\NullCollision;
 use Tightenco\Collect\Support\Collection;
 
 class App
@@ -19,23 +17,24 @@ class App
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-        // 0 == Docket
-        // 1 == Time
-        // 3 == Date
+        // 4 == 27/08/2020
+        // 8 == 149976
+        // 9 == 11:39
 
-        $symbol = collect($document->text->wordStream[0]->words[0]->symbols)->last();
+        $symbol = collect($document->text->wordStream[4]->words[0]->symbols)->last();
         $line = new FullScreenLine($symbol->vertices->median);
 //        $canvas->draw($line, $canvas->colours->purple);
+        $canvas->draw($document->text->wordStream[4]->vertices);
 
-        $symbol = collect($document->text->wordStream[1]->words[0]->symbols)->last();
-        $line = new FullScreenLine($symbol->vertices->median);
-        $canvas->draw($line, $canvas->colours->red);
+        $w = $document->text->wordStream[4];
+        $word = $document->text->wordStream[9];
+        $collision = $w->getLastSymbol()->vertices->collision(
+            $word->getFirstSymbol()->vertices
+        );
+        $canvas->draw($collision);
 
-        $symbol = collect($document->text->wordStream[3]->words[0]->symbols)->last();
-        $line = new FullScreenLine($symbol->vertices->median);
-//        $canvas->draw($line, $canvas->colours->green);
 
-        $lines = $document->organaiseTextInLines($canvas);
+        $lines = $document->organaiseTextInLines();
 
         $lineText = '';
         foreach ($lines as $line) {
@@ -45,12 +44,12 @@ class App
             }
             $lineText .= $l . "\n";
         }
-        dd($lineText);
+//        dd($lineText);
 //        dd('');
 
-        $canvas->output();
-//        $output = $document->writeToFile($array->toArray(), 'output.txt');
-//        echo "<pre>" . $output . "</pre>";
+//        $canvas->output();
+        $output = $document->writeToFile($lines, 'output.txt');
+        echo "<pre>" . $output . "</pre>";
     }
 
     private function drawAllWords(JsonDocument $document, Canvas $canvas)
