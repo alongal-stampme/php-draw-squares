@@ -29,15 +29,15 @@ class FullScreenLine extends Line
         $line3 = new Line($vertex->points[3], $vertex->points[0]);
 
         if ($canvas) {
-//            $canvas->draw($line0, $canvas->colours->purple);
-//            $canvas->draw($line1, $canvas->colours->purple);
-//            $canvas->draw($line2, $canvas->colours->purple);
+            $canvas->draw($line0, $canvas->colours->purple);
+            $canvas->draw($line1, $canvas->colours->purple);
+            $canvas->draw($line2, $canvas->colours->purple);
             $canvas->draw($line3, $canvas->colours->purple);
         }
 
-        $c0 = $this->collisionWithLine($line0);
-        $c1 = $this->collisionWithLine($line1);
-        $c2 = $this->collisionWithLine($line2);
+        $c0 = $this->collisionWithLine($line0, $canvas);
+        $c1 = $this->collisionWithLine($line1, $canvas);
+        $c2 = $this->collisionWithLine($line2, $canvas);
         $c3 = $this->collisionWithLine($line3, $canvas);
 
         $collisionPoints = [];

@@ -3,8 +3,10 @@
 namespace App;
 
 use App\Geometry\Collision;
+use App\Geometry\FullScreenLine;
 use App\Geometry\NullCollision;
 use App\Geometry\Vertex;
+use Tightenco\Collect\Support\Collection;
 
 class JsonDocument
 {
@@ -99,10 +101,10 @@ class JsonDocument
         $forSureSameLine = [];
         $notSureSameLine = [];
         foreach ($this->text->wordStream as $index => $word) {
-            $collisionTable = collect();
-//            if ($index == 12) {
+//            if ($index !== 1) continue;
+
             $collisionTable = CollisionTable::with($this)->for($word, $canvas);
-//            }
+            $collisionTable = $this->filterOnlyTheClosestCollision($collisionTable);
 
             // If there is no collision to the word then for
             // sure it is the same line as itself
@@ -147,17 +149,18 @@ class JsonDocument
             $forSureSameLine[] = [$word[0], $word[0]->collisionWith];
         }
 
+        $forSureSameLine = $this->mergeLinesThatContainsTheSameObjects(collect($forSureSameLine));
+
         // Sort the new lines by their X axis
         $forSureSameLine = collect($forSureSameLine)->map(function ($line) {
             return collect($line)->sortBy(function ($word) {
                 return $word->vertices->centreLeft->x;
             });
         })
+            // Sort by the Y axis
             ->sortBy(function ($word) {
                 return $word->first()->vertices->centreLeft->y;
             });
-
-        // Sort by the Y axis
 
         return $forSureSameLine;
     }
@@ -181,5 +184,48 @@ class JsonDocument
     private function generateText()
     {
         return (new Text)->fromWords($this->words);
+    }
+
+    private function filterOnlyTheClosestCollision(Collection $collisionTable)
+    {
+        return $collisionTable->sortByDesc(function ($word) {
+            return $word->vertices->centreLeft;
+        });
+    }
+
+    private function mergeLinesThatContainsTheSameObjects(Collection $forSureSameLine)
+    {
+        $duplicates = $forSureSameLine->flatten()->values()->duplicates();
+
+        foreach ($duplicates as $duplicate) {
+            $list = $this->findInCollection($duplicate, $forSureSameLine);
+            $merged = $this->mergeLines($list, $forSureSameLine);
+            $forSureSameLine->forget($list->toArray());
+            $forSureSameLine->add($merged);
+        }
+        return $forSureSameLine;
+    }
+
+    private function findInCollection($duplicate, Collection $forSureSameLine)
+    {
+        $lines = collect();
+        foreach ($forSureSameLine as $i => $line) {
+            foreach ($line as $j => $word) {
+                if ($word == $duplicate) {
+                    $lines->add($i);
+                }
+            }
+        }
+        return $lines;
+    }
+
+    private function mergeLines(Collection $list, Collection $forSureSameLine)
+    {
+        $merged = collect();
+        foreach ($list as $key) {
+            $merged->add($forSureSameLine->get($key));
+        }
+        $merged = $merged->flatten()->values()->unique();
+        return $merged;
     }
 }

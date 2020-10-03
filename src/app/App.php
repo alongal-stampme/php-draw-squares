@@ -12,15 +12,30 @@ class App
     public function run()
     {
 //        $image = 'IMG_20200711_145840';
-        $image = 'IMG_20200901_102427';
+//        $image = 'IMG_20200901_102427';
 //        $image = '4pkg2q5hwo81mv6l';
 //        $image = 'abcdefg';
+        $image = 'example';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-        // 12, 14, 15
+        // 0 == Docket
+        // 1 == Time
+        // 3 == Date
 
-        $lines = $document->organaiseTextInLines();
+        $symbol = collect($document->text->wordStream[0]->words[0]->symbols)->last();
+        $line = new FullScreenLine($symbol->vertices->median);
+//        $canvas->draw($line, $canvas->colours->purple);
+
+        $symbol = collect($document->text->wordStream[1]->words[0]->symbols)->last();
+        $line = new FullScreenLine($symbol->vertices->median);
+        $canvas->draw($line, $canvas->colours->red);
+
+        $symbol = collect($document->text->wordStream[3]->words[0]->symbols)->last();
+        $line = new FullScreenLine($symbol->vertices->median);
+//        $canvas->draw($line, $canvas->colours->green);
+
+        $lines = $document->organaiseTextInLines($canvas);
 
         $lineText = '';
         foreach ($lines as $line) {

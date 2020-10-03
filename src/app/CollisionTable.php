@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Geometry\Collision;
 use App\Geometry\NullCollision;
 use Tightenco\Collect\Support\Collection;
 
@@ -59,7 +60,7 @@ class CollisionTable
         return $this;
     }
 
-    private function generateCollisions($theWord)
+    public function generateCollisions($theWord)
     {
         $d = $this->document;
         $w = $theWord;
@@ -72,10 +73,6 @@ class CollisionTable
 
         $collection = collect($d->text->wordStream)->map(function ($word) use ($w, $c) {
             if ($word === $w) return false;
-
-            if ($c) {
-                if ($word->text != '1/09/2020') return false;
-            }
 
             if ($w->vertices->centreLeft->x > $word->vertices->centreLeft->x) {
                 $collision = $w->getFirstSymbol()->vertices->collision(
@@ -93,21 +90,21 @@ class CollisionTable
                 , $c
             );
             if ($c) {
-//                $c->draw($word->getFirstSymbol()->vertices);
                 $c->draw($collision);
             }
 
             return $collision;
         });
 
-        return $collection->filter(function ($word) {
-            if (!$word) return false;
+        $filtered = $collection->filter(function ($word) {
+            if (! $word) return false;
             if ($word instanceof NullCollision) return false;
             return $word;
         });
+        return $filtered;
     }
 
-    private function generateReverseCollisions(Collection $collisions)
+    public function generateReverseCollisions(Collection $collisions)
     {
         $d = $this->document;
         $c = $this->canvas;
