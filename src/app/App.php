@@ -9,25 +9,32 @@ class App
 {
     public function run()
     {
+//        $image = '1599773920-15997738444352654904274009304781';
+//        $image = '19a594d0-04d1-11eb-bd73-a33473376bc3';
+//        $image = '1b1f2da0-03ee-11eb-a380-fdd0d3f51f92';
+//        $image = 'IMG_20200907_130804';
 //        $image = 'IMG_20200711_145840';
 //        $image = 'IMG_20200901_102427';
 //        $image = '4pkg2q5hwo81mv6l';
 //        $image = 'abcdefg';
-        $image = 'example';
+//        $image = 'example';
+        $image = 'example2';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-        // 4 == 27/08/2020
-        // 8 == 149976
-        // 9 == 11:39
+        // 3 == 80.00
+        // 4 == Total to pay
+        // 5 == Card tender
+        // 6 == No change
+        // 7 == 80.00
 
-        $symbol = collect($document->text->wordStream[4]->words[0]->symbols)->last();
-        $line = new FullScreenLine($symbol->vertices->median);
+//        $symbol = collect($document->text->wordStream[3]->words[0]->symbols)->last();
+//        $line = new FullScreenLine($symbol->vertices->median);
 //        $canvas->draw($line, $canvas->colours->purple);
-        $canvas->draw($document->text->wordStream[4]->vertices);
+//        $canvas->draw($document->text->wordStream[3]->vertices);
 
-        $w = $document->text->wordStream[4];
-        $word = $document->text->wordStream[9];
+        $w = $document->text->wordStream[7];
+        $word = $document->text->wordStream[6];
         $collision = $w->getLastSymbol()->vertices->collision(
             $word->getFirstSymbol()->vertices
         );
@@ -36,18 +43,8 @@ class App
 
         $lines = $document->organaiseTextInLines();
 
-        $lineText = '';
-        foreach ($lines as $line) {
-            $l = '';
-            foreach ($line as $word) {
-                $l .= $word->text . "\t\t";
-            }
-            $lineText .= $l . "\n";
-        }
-//        dd($lineText);
-//        dd('');
-
 //        $canvas->output();
+
         $output = $document->writeToFile($lines, 'output.txt');
         echo "<pre>" . $output . "</pre>";
     }

@@ -95,7 +95,7 @@ class JsonDocument
         $forSureSameLine = [];
         $notSureSameLine = [];
         foreach ($this->text->wordStream as $index => $word) {
-//            if ($index !== 4) continue;
+//            if ($index !== 7) continue;
 
             $collisionTable = CollisionTable::with($this)->for($word, $canvas);
             $collisionTable = $this->filterOnlyTheClosestCollision($collisionTable);
@@ -122,6 +122,19 @@ class JsonDocument
             $word->collisionWith = $collisionTable->first();
             $notSureSameLine[] = [$word];
         }
+//        dd($forSureSameLine, $notSureSameLine);
+
+        // Move items that after the first iteration has now
+        // a collision with another item into the
+        // not sure list
+        $forSureSameLine = collect($forSureSameLine)->filter(function($item) use (&$notSureSameLine) {
+            if (isset($item[0]->collision)) {
+                $notSureSameLine[] = $item;
+                return false;
+            }
+            return $item;
+        })->values()->toArray();
+//        dd($forSureSameLine, $notSureSameLine);
 
         // Filter out all the words that their collision appears
         // for sure in a separate line somewhere else
@@ -134,6 +147,7 @@ class JsonDocument
 
         // Double check all the words that we not sure about
         foreach ($sameLine as $word) {
+            dump($word[0]);
             $isCollision = CollisionTable::with($this)->doubleCheck($word[0], $word[0]->collisionWith, $canvas);
             if (!$isCollision) {
                 $forSureSameLine[] = [$word[0]];

@@ -1,6 +1,5 @@
-Docket		Date		Time		
-149976		27/08/2020		11:39		
-Payment Details:		
-EFTPOS		$283.19		
-Thank You for Shopping at JUMBO ANIMAL		
-SUPPLIES		
+Total to Pay		Card Tendered		80.00		80.00		
+No Change		
+ITEMS CAN BE EXCHANGED IF		
+RETURNED AS SOLD WITHIN 1 MONTH		
+OF PURCHASE DATE & VALID RECEIPT		
