@@ -9,14 +9,33 @@ use Tightenco\Collect\Support\Collection;
 class CollisionTable
 {
     public $word;
+    public $words;
     public $collisions;
 
     private $canvas;
     private $document;
 
+
     public static function with(JsonDocument $document)
     {
         return new self($document);
+    }
+
+    public static function init(JsonDocument $document)
+    {
+        return new self($document);
+    }
+
+    public function forWord(WordStream $word)
+    {
+        $this->word = $word;
+        return $this;
+    }
+
+    public function withWords(Collection $words)
+    {
+        $this->words = $words;
+        return $this->forCollection($this->word, $this->words);
     }
 
     public function for(WordStream $word, $canvas = null)
@@ -37,6 +56,36 @@ class CollisionTable
             });
 
         return $this->collisions;
+    }
+
+    // This function gets a word and a collection of words and finds
+    // which is the collision with the smallest slope and
+    // attached it to the collisionWith property
+    public function forCollection(WordStream $word, Collection $words, $canvas = null)
+    {
+        $slope = 10000;
+        foreach ($words as $index => $w) {
+            if (is_array($w)) $w = $w[0];
+
+            if ($w === $word) continue;
+
+            $collision = $w->getLastSymbol()->vertices->collision(
+                $word->getFirstSymbol()->vertices
+            );
+
+            if ($collision instanceof NullCollision) continue;
+
+            if (abs($collision->distance->slope) < $slope) {
+                $word->collisionWith = $w;
+                $word->collisionWithIndex = $index;
+            }
+
+
+//            dump($word->text . ' <---> ' .  $w->text . ' <---> ' . $collision->distance->slope);
+            if ($canvas) $canvas->draw($collision);
+        }
+
+        return $word;
     }
 
     public function doubleCheck(WordStream $word, WordStream $collisionWith, $canvas = null)
@@ -97,7 +146,7 @@ class CollisionTable
         });
 
         $filtered = $collection->filter(function ($word) {
-            if (! $word) return false;
+            if ( ! $word) return false;
             if ($word instanceof NullCollision) return false;
             return $word;
         });

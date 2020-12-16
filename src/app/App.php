@@ -9,7 +9,7 @@ class App
 {
     public function run()
     {
-//        $image = '1599773920-15997738444352654904274009304781';
+        $image = '1599773920-15997738444352654904274009304781';
 //        $image = '19a594d0-04d1-11eb-bd73-a33473376bc3';
 //        $image = '1b1f2da0-03ee-11eb-a380-fdd0d3f51f92';
 //        $image = 'IMG_20200907_130804';
@@ -18,35 +18,60 @@ class App
 //        $image = '4pkg2q5hwo81mv6l';
 //        $image = 'abcdefg';
 //        $image = 'example';
-        $image = 'example2';
+//        $image = 'example2';
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
-        // 3 == 80.00
-        // 4 == Total to pay
-        // 5 == Card tender
-        // 6 == No change
-        // 7 == 80.00
-
-//        $symbol = collect($document->text->wordStream[3]->words[0]->symbols)->last();
+//        $symbol = $document->text->wordStream[5]->words[1]->symbols[7];
+//        $canvas->draw($symbol->vertices, $canvas->colours->yellow);
 //        $line = new FullScreenLine($symbol->vertices->median);
 //        $canvas->draw($line, $canvas->colours->purple);
-//        $canvas->draw($document->text->wordStream[3]->vertices);
+//        $canvas->draw($document->text->wordStream[5]->vertices);
 
-        $w = $document->text->wordStream[7];
-        $word = $document->text->wordStream[6];
-        $collision = $w->getLastSymbol()->vertices->collision(
-            $word->getFirstSymbol()->vertices
-        );
-        $canvas->draw($collision);
+        foreach ($document->text->wordStream as $index => $w) {
+            $word = CollisionTable::init($document)
+                ->forWord($w)
+                ->withWords(collect($document->text->wordStream));
+            $word->index = $index;
 
+            dump($word);
+        }
+        // NEXT STEP IS TO PUT ALL OF THE COLLISIONS IN A TABLE FOR EACH LINE
+        // SORT THE LINES BY THE X AXIS
+        // REMOVE DUPLICATE LINES
+        // [0]
+        // [1]
+        // ...
+        // [10][11]
+        // [11][10]
+        // [12]
+        // [13][15]
+        // [14][15]
 
-        $lines = $document->organaiseTextInLines();
+        dd('---');
+//        $w = $document->text->wordStream[15];
+//        $canvas->draw($w->vertices, $canvas->colours->yellow);
+//
+//        $word = CollisionTable::init($document)
+//            ->forWord($w)
+//            ->withWords(collect($document->text->wordStream));
+//
+//        dd($word);
+//        $canvas->draw($word->collisionWith->vertices);
+//        $word = $document->text->wordStream[5];
+//        $collision = $w->getLastSymbol()->vertices->collision(
+//            $word->getFirstSymbol()->vertices
+//        );
+//        $canvas->draw($collision);
 
-//        $canvas->output();
+//        dd($collision->distance->slope);
 
-        $output = $document->writeToFile($lines, 'output.txt');
-        echo "<pre>" . $output . "</pre>";
+//        $lines = $document->organaiseTextInLines();
+
+        $canvas->output();
+
+//        $output = $document->writeToFile($lines, 'output.txt');
+//        echo "<pre>" . $output . "</pre>";
     }
 
     private function drawAllWords(JsonDocument $document, Canvas $canvas)

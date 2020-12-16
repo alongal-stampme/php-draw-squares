@@ -62,7 +62,7 @@ class JsonDocument
         $text = $lineText;
         // Write to file
         $file = fopen("output.txt", "w+");
-        fwrite($file,  $text);
+        fwrite($file, $text);
         fclose($file);
 
         return file_get_contents($fileName);
@@ -76,13 +76,13 @@ class JsonDocument
 
                 $collision = $word->vertices->collision($w->vertices);
 
-                if (!$collision instanceof NullCollision) {
+                if ( ! $collision instanceof NullCollision) {
                     $collision->length = $collision->distance->length;
                     return $collision;
                 }
             })
             ->filter(function ($collision) {
-                return !is_null($collision);
+                return ! is_null($collision);
             })
             ->sortBy('distance.length');
 
@@ -127,7 +127,7 @@ class JsonDocument
         // Move items that after the first iteration has now
         // a collision with another item into the
         // not sure list
-        $forSureSameLine = collect($forSureSameLine)->filter(function($item) use (&$notSureSameLine) {
+        $forSureSameLine = collect($forSureSameLine)->filter(function ($item) use (&$notSureSameLine) {
             if (isset($item[0]->collision)) {
                 $notSureSameLine[] = $item;
                 return false;
@@ -146,14 +146,14 @@ class JsonDocument
             ->values();
 
         // Double check all the words that we not sure about
-        foreach ($sameLine as $word) {
-            dump($word[0]);
-            $isCollision = CollisionTable::with($this)->doubleCheck($word[0], $word[0]->collisionWith, $canvas);
-            if (!$isCollision) {
-                $forSureSameLine[] = [$word[0]];
-                $forSureSameLine[] = [$word[0]->collisionWith];
-                continue;
-            }
+        foreach ($sameLine as $i => $word) {
+            CollisionTable::with($this)->checkForCollection($word[0], $sameLine);
+//            $isCollision = CollisionTable::with($this)->doubleCheck($word[0], $word[0]->collisionWith, $canvas);
+//            if ( ! $isCollision) {
+//                $forSureSameLine[] = [$word[0]];
+//                $forSureSameLine[] = [$word[0]->collisionWith];
+//                continue;
+//            }
             $forSureSameLine[] = [$word[0], $word[0]->collisionWith];
         }
 
