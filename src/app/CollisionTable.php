@@ -32,6 +32,12 @@ class CollisionTable
         return $this;
     }
 
+    public function atIndex($index)
+    {
+        $this->word->index = $index;
+        return $this;
+    }
+
     public function withWords(Collection $words)
     {
         $this->words = $words;

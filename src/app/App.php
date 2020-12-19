@@ -9,8 +9,8 @@ class App
 {
     public function run()
     {
-        $image = '1599773920-15997738444352654904274009304781';
-//        $image = '19a594d0-04d1-11eb-bd73-a33473376bc3';
+//        $image = '1599773920-15997738444352654904274009304781';
+        $image = '19a594d0-04d1-11eb-bd73-a33473376bc3';
 //        $image = '1b1f2da0-03ee-11eb-a380-fdd0d3f51f92';
 //        $image = 'IMG_20200907_130804';
 //        $image = 'IMG_20200711_145840';
@@ -28,15 +28,32 @@ class App
 //        $canvas->draw($line, $canvas->colours->purple);
 //        $canvas->draw($document->text->wordStream[5]->vertices);
 
+        // 1. GET COLLISIONS
+        $collection = collect();
         foreach ($document->text->wordStream as $index => $w) {
             $word = CollisionTable::init($document)
                 ->forWord($w)
+                ->atIndex($index)
                 ->withWords(collect($document->text->wordStream));
-            $word->index = $index;
 
-            dump($word);
+            // 1.1. PUT ALL OF THE COLLISIONS IN A TABLE FOR EACH LINE
+            $line = collect()->push($word);
+            if ($word->collisionWithIndex != null) $line->push($word->collisionWith);
+
+            // 1.2 ADD LINE TO OVERALL COLLECTION
+            $collection->push($line);
         }
-        // NEXT STEP IS TO PUT ALL OF THE COLLISIONS IN A TABLE FOR EACH LINE
+
+        // 2. MERGE LINES WHERE WE HAVE DUPLICATE ITEMS
+        foreach ($collection as $i => $line) {
+            $word = $line->first();
+            // 2.1 Search for this word in the entire dataset (collection)
+            if ($word->collisionWithIndex === null) continue;
+            $line->push()
+        }
+
+
+
         // SORT THE LINES BY THE X AXIS
         // REMOVE DUPLICATE LINES
         // [0]
