@@ -44,15 +44,44 @@ class App
             $collection->push($line);
         }
 
+
         // 2. MERGE LINES WHERE WE HAVE DUPLICATE ITEMS
-        foreach ($collection as $i => $line) {
-            $word = $line->first();
-            // 2.1 Search for this word in the entire dataset (collection)
+        $ignoredLines = [];
+        foreach ($collection as $index => $line) {
+            if (in_array($index, $ignoredLines)) continue;
+
+            $word = $line->get(0);
+            // 2.1 If there is no collision for this line in the dataset then we
+            // can skip this and move on
             if ($word->collisionWithIndex === null) continue;
-            $line->push()
+
+            // 2.2 Now, when we found a collision, we copy the collided line
+            // to the current line
+            foreach ($collection->get($word->collisionWithIndex) as $item) {
+                $line->push($item);
+            }
+
+            // 2.3 Ignore the collided line in our next iterations
+            $ignoredLines[] = $word->collisionWithIndex;
+
+            // 2.4 Check collision of the second item in the line
+            $word = $line->get(1);
+            if ($word->collisionWithIndex === $index) continue;
+
+            // 2.5 Merge the collided line of the second word to the line as well
+            foreach ($collection->get($word->collisionWithIndex) as $item) {
+                $line->push($item);
+            }
+
+            $ignoredLines[] = $word->collisionWithIndex;
         }
 
+        // 3. DELETE ALL THE IGNORED LINES
+        foreach ($ignoredLines as $ignoredLine) {
+            $collection->forget($ignoredLine);
+        }
 
+        dd($collection);
 
         // SORT THE LINES BY THE X AXIS
         // REMOVE DUPLICATE LINES
