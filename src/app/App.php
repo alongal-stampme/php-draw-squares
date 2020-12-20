@@ -9,16 +9,16 @@ class App
 {
     public function run()
     {
-//        $image = '1599773920-15997738444352654904274009304781';
-        $image = '19a594d0-04d1-11eb-bd73-a33473376bc3';
+        $image = '1599773920-15997738444352654904274009304781';
+//        $image = '19a594d0-04d1-11eb-bd73-a33473376bc3'; ---------
 //        $image = '1b1f2da0-03ee-11eb-a380-fdd0d3f51f92';
 //        $image = 'IMG_20200907_130804';
 //        $image = 'IMG_20200711_145840';
 //        $image = 'IMG_20200901_102427';
-//        $image = '4pkg2q5hwo81mv6l';
+//        $image = '4pkg2q5hwo81mv6l'; ---------
 //        $image = 'abcdefg';
 //        $image = 'example';
-//        $image = 'example2';
+//        $image = 'example2'; ---------
         $document = new JsonDocument(load_json_file($image . '.json'));
         $canvas = new Canvas($image);
 
@@ -81,37 +81,37 @@ class App
             $collection->forget($ignoredLine);
         }
 
-        dd($collection);
+        // 4. REMOVE DUPLICATE LINES
+        foreach ($collection as $index => $line) {
+            $line = $line->unique();
+            $collection[$index] = $line;
+        }
 
-        // SORT THE LINES BY THE X AXIS
-        // REMOVE DUPLICATE LINES
-        // [0]
-        // [1]
-        // ...
-        // [10][11]
-        // [11][10]
-        // [12]
-        // [13][15]
-        // [14][15]
+        // 5. SORT THE LINES BY THE X AXIS
+        foreach ($collection as $index => $line) {
+            foreach ($line as $item) {
+                $item->x = $item->vertices->centreLeft->x;
+                $item->y = $item->vertices->centreLeft->y;
+            }
+            $line = $line->sortBy('x');
+            $collection[$index] = $line;
+        }
 
-        dd('---');
-//        $w = $document->text->wordStream[15];
-//        $canvas->draw($w->vertices, $canvas->colours->yellow);
-//
-//        $word = CollisionTable::init($document)
-//            ->forWord($w)
-//            ->withWords(collect($document->text->wordStream));
-//
-//        dd($word);
-//        $canvas->draw($word->collisionWith->vertices);
-//        $word = $document->text->wordStream[5];
-//        $collision = $w->getLastSymbol()->vertices->collision(
-//            $word->getFirstSymbol()->vertices
-//        );
-//        $canvas->draw($collision);
+        // 6. SORT BY Y AXIS
+        $collection = $collection->sort(function($a, $b) {
+            if ($a[0]->y == $b[0]->y) return 0;
+            return ($a[0]->y < $b[0]->y) ? -1 : 1;
+        });
 
-//        dd($collision->distance->slope);
+        $text = '';
+        foreach ($collection as $line) {
+            foreach ($line as $word) {
+                $text .= $word->text . "\t";
+            }
+            $text .= "\n";
+        }
 
+        dd($text);
 //        $lines = $document->organaiseTextInLines();
 
         $canvas->output();
