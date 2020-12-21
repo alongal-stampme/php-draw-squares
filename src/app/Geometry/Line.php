@@ -13,6 +13,10 @@ class Line
     public function __construct(Point $point1 = null, Point $point2 = null)
     {
         $this->points = [$point1, $point2];
+
+        if (is_null($point1)) return;
+        if (is_null($point2)) return;
+
         $this->centre = $this->calculateCentre();
         $this->slope = $this->calculateSlope();
         $this->b = $this->calculateB();
@@ -33,7 +37,11 @@ class Line
         $b1 = $this->b;
         $b2 = $line->b;
 
-        $x = ($b2 - $b1) / ($s1 - $s2);
+        if (abs($s1 - $s2) == 0) {
+            $x = 0;
+        } else {
+            $x = ($b2 - $b1) / ($s1 - $s2);
+        }
         $y = ($s1 * $x) + $b1;
 
         if ($s1 == 0) {
@@ -101,6 +109,8 @@ class Line
 
     protected function calculateSlope()
     {
+        if (abs($this->points[1]->x - $this->points[0]->x) == 0) return 0;
+
         return ($this->points[1]->y - $this->points[0]->y) / ($this->points[1]->x - $this->points[0]->x);
     }
 

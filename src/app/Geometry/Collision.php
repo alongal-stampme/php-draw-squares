@@ -22,6 +22,11 @@ class Collision
     {
         $shortestLine = new Line();
 
+        if ($this->collisionPoints == null) {
+            $this->distance = $shortestLine;
+            return $this;
+        }
+
         foreach ($this->collisionPoints as $point) {
             $line = new Line($this->originVertex->centre, $point);
             if ($line->length < $shortestLine->length) {

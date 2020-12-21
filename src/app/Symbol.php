@@ -29,6 +29,7 @@ class Symbol
 
         $this->vertices->fromJson($json->boundingBox->vertices);
         $this->text = $json->text;
+        if ( ! isset($json->confidence)) $json->confidence = 0;
         $this->confidence = $json->confidence;
 
         if ($this->language) {
@@ -57,12 +58,13 @@ class Symbol
 
     public function breakCharacter()
     {
-        if (! $this->break) return;
+        if ( ! $this->break) return;
 
         $breaks = [
             'LINE_BREAK' => "\n",
             'EOL_SURE_SPACE' => "\n",
-            'SPACE' => " "
+            'SPACE' => " ",
+            'HYPHEN' => "-"
         ];
         return $breaks[$this->break];
     }

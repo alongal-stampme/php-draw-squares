@@ -41,10 +41,10 @@ class FullScreenLine extends Line
         $c3 = $this->collisionWithLine($line3, $canvas);
 
         $collisionPoints = [];
-        if (!$c0 instanceof NullPoint) $collisionPoints[] = $c0;
-        if (!$c1 instanceof NullPoint) $collisionPoints[] = $c1;
-        if (!$c2 instanceof NullPoint) $collisionPoints[] = $c2;
-        if (!$c3 instanceof NullPoint) $collisionPoints[] = $c3;
+        if ( ! $c0 instanceof NullPoint) $collisionPoints[] = $c0;
+        if ( ! $c1 instanceof NullPoint) $collisionPoints[] = $c1;
+        if ( ! $c2 instanceof NullPoint) $collisionPoints[] = $c2;
+        if ( ! $c3 instanceof NullPoint) $collisionPoints[] = $c3;
         $collisionPoints = collect($collisionPoints);
 
         if ($canvas) {
