@@ -19,6 +19,7 @@ class JsonDocument
 
     public function __construct($json)
     {
+        $json = json_decode(json_encode($json));
         $this->json = $json;
         $this->width = $this->json->responses[0]->fullTextAnnotation->pages[0]->width;
         $this->height = $this->json->responses[0]->fullTextAnnotation->pages[0]->height;

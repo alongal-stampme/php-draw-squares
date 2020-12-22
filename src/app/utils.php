@@ -14,6 +14,6 @@ if ( ! function_exists('load_json_file')) {
     function load_json_file($file)
     {
         $json = file_get_contents(__DIR__ . '/../json_files/' . $file);
-        return json_decode($json);
+        return json_decode($json, true);
     }
 }
